@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delivery Accelerator Agents — Databricks Walkthrough (UI/UX Mockup)</title>
+<style>
+  :root{
+    --db-navy:#1B3139;
+    --db-navy-hov:#28434c;
+    --db-navy-active:#0e2229;
+    --db-lava:#FF3621;
+    --db-lava-hov:#e62d19;
+    --db-oat-light:#F9F7F4;
+    --db-oat-med:#EEEDE9;
+    --db-border:#DCE0E1;
+    --db-border-strong:#C9CFD1;
+    --db-text:#1B3139;
+    --db-text-sec:#5A7183;
+    --db-text-mute:#8A99A3;
+    --db-green:#00A972;
+    --db-green-bg:#E3F6EE;
+    --db-amber:#B8860B;
+    --db-amber-bg:#FDF3DA;
+    --db-orange:#C2540A;
+    --db-orange-bg:#FCE9DD;
+    --db-red:#C7362B;
+    --db-red-bg:#FBE7E5;
+    --db-blue:#2272B4;
+    --db-blue-bg:#E7F1F9;
+    --db-purple:#6a3fd6;
+    --stepper-h:38px;
+    --font: -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono: ui-monospace,"Cascadia Mono","Consolas","SFMono-Regular",Menlo,monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; font-family:var(--font); color:var(--db-text); background:var(--db-oat-light);
+    font-size:13px; -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit; cursor:pointer;}
+  ::selection{background:rgba(255,54,33,0.18);}
+
+  /* ============ DEMO PRESENTER STEPPER (not part of the product UI) ============ */
+  .demo-stepper{
+    height:var(--stepper-h); background:#0e2229; display:flex; align-items:center; padding:0 14px; gap:6px;
+    flex-shrink:0; position:relative; z-index:100;
+  }
+  .demo-stepper .dtag{font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:#71909c; margin-right:8px; white-space:nowrap;}
+  .dstep{font-size:11.5px; font-weight:600; color:#9fb4bd; padding:5px 12px; border-radius:100px; white-space:nowrap; border:none; background:transparent;}
+  .dstep:hover{color:#fff;}
+  .dstep.active{background:var(--db-lava); color:#fff;}
+  .dstep .n{font-family:var(--mono); margin-right:5px; opacity:.75;}
+  .demo-spacer{flex:1;}
+  .demo-reset{font-size:11.5px; font-weight:600; color:#9fb4bd; background:transparent; border:1px solid rgba(255,255,255,0.2); border-radius:6px; padding:5px 11px; flex-shrink:0;}
+  .demo-reset:hover{color:#fff; border-color:rgba(255,255,255,0.45);}
+
+  /* ============ SCREEN SWITCHING ============ */
+  .screen{display:none;}
+  .screen.active{display:block; height:calc(100vh - var(--stepper-h));}
+  #screen-login.active{display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(900px 500px at 80% 0%, rgba(255,54,33,0.14), transparent 60%), linear-gradient(160deg,#0e2229,#1B3139 60%,#28434c);}
+
+  .shell{display:flex; height:100%; width:100%; overflow:hidden;}
+
+  /* ============ LEFT RAIL (Databricks workspace nav) ============ */
+  .rail{
+    width:56px; flex-shrink:0; background:var(--db-navy); display:flex; flex-direction:column;
+    align-items:center; padding:12px 0; gap:2px; height:100%; position:relative;
+  }
+  .rail-logo{
+    width:30px; height:30px; border-radius:7px; background:var(--db-lava);
+    display:flex; align-items:center; justify-content:center; margin-bottom:14px; flex-shrink:0;
+  }
+  .rail-logo svg{width:16px; height:16px;}
+  .rail-icon{
+    width:38px; height:38px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    color:#9fb4bd; position:relative; flex-shrink:0;
+  }
+  .rail-icon svg{width:18px; height:18px;}
+  .rail-icon:hover{background:var(--db-navy-hov); color:#fff;}
+  .rail-icon.active{background:var(--db-navy-active); color:#fff;}
+  .rail-icon.active::before{content:""; position:absolute; left:-12px; top:8px; bottom:8px; width:3px; background:var(--db-lava); border-radius:0 3px 3px 0;}
+  .rail-spacer{flex:1;}
+  .rail-avatar{
+    width:28px; height:28px; border-radius:50%; background:#4a6572; color:#fff; font-size:11px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; margin-top:6px;
+  }
+  .rail-icon.hint-target::after{
+    content:""; position:absolute; inset:-4px; border-radius:11px; border:2px solid var(--db-lava);
+    animation:pulsering 1.7s ease-out infinite;
+  }
+  @keyframes pulsering{0%{opacity:.9; transform:scale(0.92);} 70%{opacity:0; transform:scale(1.22);} 100%{opacity:0;}}
+  .rail-hint{
+    position:absolute; left:64px; top:256px; background:var(--db-navy-active); color:#fff; font-size:11.5px; font-weight:650;
+    padding:8px 12px; border-radius:8px; white-space:nowrap; box-shadow:0 8px 22px rgba(0,0,0,0.35); z-index:30;
+  }
+  .rail-hint::before{content:""; position:absolute; left:-5px; top:50%; transform:translateY(-50%); width:0; height:0;
+    border-top:6px solid transparent; border-bottom:6px solid transparent; border-right:6px solid var(--db-navy-active);}
+
+  /* ============ MAIN COLUMN ============ */
+  .main{flex:1; display:flex; flex-direction:column; min-width:0; height:100%;}
+
+  .topbar{
+    height:48px; flex-shrink:0; background:#fff; border-bottom:1px solid var(--db-border);
+    display:flex; align-items:center; padding:0 16px; gap:16px;
+  }
+  .ws-switch{display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--db-text); padding:6px 10px; border-radius:6px; border:1px solid var(--db-border);}
+  .ws-switch svg{width:12px; height:12px; color:var(--db-text-sec);}
+  .searchbar{
+    flex:1; max-width:520px; height:30px; border:1px solid var(--db-border); border-radius:6px; background:var(--db-oat-light);
+    display:flex; align-items:center; padding:0 10px; gap:8px; color:var(--db-text-mute); font-size:12.5px;
+  }
+  .searchbar svg{width:14px; height:14px;}
+  .topbar-spacer{flex:1;}
+  .topbar-icons{display:flex; align-items:center; gap:6px;}
+  .ticon{width:30px; height:30px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--db-text-sec);}
+  .ticon:hover{background:var(--db-oat-med);}
+  .ticon svg{width:16px; height:16px;}
+
+  .appbar{
+    flex-shrink:0; background:#fff; border-bottom:1px solid var(--db-border);
+    padding:14px 24px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .breadcrumb{font-size:12px; color:var(--db-text-mute); display:flex; align-items:center; gap:6px; width:100%; margin-bottom:2px;}
+  .breadcrumb .sep{color:var(--db-border-strong);}
+  .breadcrumb .cur{color:var(--db-text-sec);}
+  .breadcrumb .bclink{color:var(--db-blue); font-weight:600;}
+  .breadcrumb .bclink:hover{text-decoration:underline;}
+  .app-title-row{display:flex; align-items:center; gap:12px; flex:1; min-width:280px;}
+  .app-icon{
+    width:34px; height:34px; border-radius:8px; background:linear-gradient(135deg,#FF3621,#C2540A);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .app-icon svg{width:18px; height:18px; color:#fff;}
+  .app-title{font-size:16px; font-weight:700; color:var(--db-text); line-height:1.2;}
+  .app-sub{font-size:11.5px; color:var(--db-text-mute); margin-top:2px; display:flex; align-items:center; gap:8px;}
+  .run-pill{display:inline-flex; align-items:center; gap:5px; font-weight:600; color:var(--db-green);}
+  .run-pill::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--db-green); box-shadow:0 0 0 3px var(--db-green-bg);}
+  .appbar-actions{display:flex; gap:8px; align-items:center;}
+  .btn{
+    display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; border-radius:6px;
+    padding:7px 13px; border:1px solid var(--db-border-strong); background:#fff; color:var(--db-text);
+    white-space:nowrap;
+  }
+  .btn:hover{background:var(--db-oat-med);}
+  .btn-primary{background:var(--db-lava); border-color:var(--db-lava); color:#fff;}
+  .btn-primary:hover{background:var(--db-lava-hov); border-color:var(--db-lava-hov);}
+  .btn svg{width:13px; height:13px;}
+  .btn:disabled{opacity:0.55; cursor:default;}
+
+  /* ============ APP CANVAS ============ */
+  .app-canvas{flex:1; display:flex; min-height:0; overflow:hidden;}
+
+  .app-sidebar{
+    width:296px; flex-shrink:0; background:#fff; border-right:1px solid var(--db-border);
+    padding:20px; overflow-y:auto;
+  }
+  .field-group{margin-bottom:18px;}
+  .field-label{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--db-text-sec); margin-bottom:8px; display:block;}
+  .upload-zone{
+    border:1.5px dashed var(--db-border-strong); border-radius:8px; padding:18px 14px; text-align:center;
+    color:var(--db-text-mute); font-size:12px; background:var(--db-oat-light);
+  }
+  .upload-zone svg{width:20px; height:20px; margin-bottom:6px; color:var(--db-text-mute);}
+  .upload-zone b{color:var(--db-blue); font-weight:600;}
+  .file-chip{
+    margin-top:10px; display:flex; align-items:center; gap:8px; background:var(--db-oat-med); border-radius:6px;
+    padding:8px 10px; font-size:12px;
+  }
+  .file-chip svg{width:14px; height:14px; color:var(--db-text-sec); flex-shrink:0;}
+  .file-chip .fname{font-weight:600; flex:1;}
+  .file-chip .fsize{color:var(--db-text-mute); font-size:11px;}
+  select, .select-fake{
+    width:100%; padding:8px 10px; border:1px solid var(--db-border-strong); border-radius:6px; font-size:12.5px;
+    background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%235A7183" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>') no-repeat right 8px center;
+    background-size:14px; appearance:none; color:var(--db-text); font-family:inherit;
+  }
+  .run-btn{
+    width:100%; padding:11px; margin-top:6px; border-radius:7px; background:var(--db-lava); border:none; color:#fff;
+    font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .run-btn:hover{background:var(--db-lava-hov);}
+  .run-btn.loading{background:var(--db-text-mute); pointer-events:none;}
+  .spinner{width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; animation:spin .7s linear infinite; display:none;}
+  .run-btn.loading .spinner{display:inline-block;}
+  .run-btn.loading .runlabel{display:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .recent-runs{border-top:1px solid var(--db-border); margin-top:20px; padding-top:16px;}
+  .recent-item{display:flex; align-items:center; gap:8px; padding:7px 0; font-size:12px; color:var(--db-text-sec);}
+  .recent-item .dot{width:6px; height:6px; border-radius:50%; background:var(--db-green); flex-shrink:0;}
+  .recent-item .rname{flex:1;}
+  .recent-item .rtime{color:var(--db-text-mute); font-size:11px;}
+
+  /* ============ RESULTS AREA ============ */
+  .results{flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden;}
+
+  .tabbar{display:flex; gap:2px; padding:0 20px; border-bottom:1px solid var(--db-border); background:#fff; flex-shrink:0; overflow-x:auto;}
+  .tab{
+    padding:12px 14px; font-size:12.5px; font-weight:600; color:var(--db-text-sec); border-bottom:2px solid transparent;
+    white-space:nowrap; display:flex; align-items:center; gap:7px;
+  }
+  .tab:hover{color:var(--db-text);}
+  .tab.active{color:var(--db-lava); border-color:var(--db-lava);}
+  .tab .count{font-size:10.5px; background:var(--db-oat-med); color:var(--db-text-sec); padding:1px 6px; border-radius:100px; font-weight:700;}
+  .tab.active .count{background:var(--db-red-bg); color:var(--db-lava);}
+
+  .tabpanel{flex:1; overflow-y:auto; padding:22px 26px; display:none;}
+  .tabpanel.active{display:block;}
+
+  .panel-head{margin-bottom:16px;}
+  .panel-head h2{font-size:14.5px; margin:0 0 4px; font-weight:700;}
+  .panel-head p{font-size:12.5px; color:var(--db-text-sec); margin:0; max-width:640px;}
+
+  .empty-state{display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; height:100%; padding:40px; color:var(--db-text-mute);}
+  .empty-state svg{width:40px; height:40px; margin-bottom:14px; color:var(--db-border-strong);}
+  .empty-state h3{font-size:14.5px; color:var(--db-text-sec); margin:0 0 6px;}
+  .empty-state p{font-size:12.5px; margin:0; max-width:320px;}
+
+  /* code compare */
+  .code-compare{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;}
+  .code-card{border:1px solid var(--db-border); border-radius:8px; overflow:hidden; background:#fff;}
+  .code-card .ch{
+    display:flex; align-items:center; justify-content:space-between; padding:9px 14px; background:var(--db-oat-med);
+    border-bottom:1px solid var(--db-border); font-size:11.5px; font-weight:700; color:var(--db-text-sec);
+  }
+  .code-card.after .ch{color:var(--db-green); background:var(--db-green-bg);}
+  .code-card pre{margin:0; padding:14px; font-family:var(--mono); font-size:12px; line-height:1.7; overflow-x:auto; color:var(--db-text);}
+  .kw{color:#a626a4; font-weight:600;}
+  .fn{color:#2272B4;}
+  .str{color:#00A972;}
+  .cm{color:var(--db-text-mute); font-style:italic;}
+
+  /* agent trace */
+  .trace-list{display:flex; flex-direction:column; gap:0; margin-top:6px;}
+  .trace-item{display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--db-border);}
+  .trace-item:last-child{border-bottom:none;}
+  .trace-dot{width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:var(--db-green-bg); color:var(--db-green); margin-top:1px;}
+  .trace-dot svg{width:14px; height:14px;}
+  .trace-dot.retry{background:var(--db-amber-bg); color:var(--db-amber);}
+  .trace-body{flex:1;}
+  .trace-title{font-size:13px; font-weight:650; color:var(--db-text);}
+  .trace-detail{font-size:12px; color:var(--db-text-sec); margin-top:3px; line-height:1.55;}
+  .trace-detail code{font-family:var(--mono); background:var(--db-oat-med); padding:1px 5px; border-radius:4px; font-size:11px;}
+  .trace-meta{font-size:11px; color:var(--db-text-mute); margin-top:5px; font-family:var(--mono);}
+
+  /* mapping confidence table */
+  .conf-table{width:100%; border-collapse:collapse; margin-top:14px; font-size:12.5px;}
+  .conf-table thead th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--db-text-mute); font-weight:700; padding:0 12px 10px; border-bottom:1px solid var(--db-border-strong);}
+  .conf-table tbody td{padding:12px; border-bottom:1px solid var(--db-border); vertical-align:top;}
+  .conf-table code{font-family:var(--mono); font-size:11.5px; background:var(--db-oat-med); padding:2px 6px; border-radius:4px;}
+  .conf-badge{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:100px; display:inline-block; white-space:nowrap;}
+  .conf-converted{background:var(--db-green-bg); color:var(--db-green);}
+  .conf-assumed{background:var(--db-amber-bg); color:var(--db-amber);}
+  .conf-guessed{background:var(--db-orange-bg); color:var(--db-orange);}
+  .conf-unresolved{background:var(--db-red-bg); color:var(--db-red);}
+  .rationale{color:var(--db-text-sec); font-size:12px; max-width:280px;}
+
+  /* validation */
+  .val-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:6px;}
+  .val-stat{border:1px solid var(--db-border); border-radius:8px; padding:16px;}
+  .val-stat .vlabel{font-size:11px; color:var(--db-text-mute); text-transform:uppercase; letter-spacing:.03em; font-weight:700;}
+  .val-stat .vval{font-size:24px; font-weight:750; margin-top:6px; font-variant-numeric:tabular-nums;}
+  .val-stat.ok .vval{color:var(--db-green);}
+  .val-stat.warn .vval{color:var(--db-amber);}
+  .val-log{margin-top:20px; border:1px solid var(--db-border); border-radius:8px; overflow:hidden;}
+  .val-row{display:flex; align-items:center; gap:12px; padding:11px 14px; border-bottom:1px solid var(--db-border); font-size:12.5px;}
+  .val-row:last-child{border-bottom:none;}
+  .val-row .vicon{width:18px; height:18px; flex-shrink:0;}
+  .val-row.pass .vicon{color:var(--db-green);}
+  .vname{flex:1; font-weight:600;}
+  .vdetail{color:var(--db-text-mute); font-size:11.5px; font-family:var(--mono);}
+
+  /* sttm doc */
+  .sttm-table{width:100%; border-collapse:collapse; margin-top:14px; font-size:12px;}
+  .sttm-table th{background:var(--db-oat-med); text-align:left; padding:9px 12px; font-size:11px; font-weight:700; color:var(--db-text-sec); border:1px solid var(--db-border);}
+  .sttm-table td{padding:9px 12px; border:1px solid var(--db-border); font-family:var(--mono); font-size:11.5px;}
+  .doc-toolbar{display:flex; gap:8px; margin-top:14px;}
+
+  /* etl code */
+  .etl-block{border:1px solid var(--db-border); border-radius:8px; overflow:hidden; margin-top:14px;}
+  .etl-head{display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--db-navy); color:#dce6ea;}
+  .etl-head .fname{font-family:var(--mono); font-size:12px;}
+  .etl-head .btn{background:transparent; border-color:rgba(255,255,255,0.25); color:#dce6ea; padding:5px 10px; font-size:11.5px;}
+  .etl-block pre{margin:0; padding:16px; font-family:var(--mono); font-size:12px; line-height:1.7; color:#e8edf0; background:#12262d; overflow-x:auto;}
+  .etl-block .kw{color:#f97583;}
+  .etl-block .fn{color:#79b8ff;}
+  .etl-block .str{color:#9ecbff;}
+  .etl-block .cm{color:#6b8b96; font-style:italic;}
+
+  /* ============ LOGIN SCREEN ============ */
+  .login-card{width:388px; background:#fff; border-radius:14px; box-shadow:0 24px 70px rgba(0,0,0,0.4); padding:38px 34px 30px; text-align:center;}
+  .login-logo{display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:24px;}
+  .login-logo .lg-icon{width:34px; height:34px; border-radius:8px; background:var(--db-lava); display:flex; align-items:center; justify-content:center;}
+  .login-logo .lg-icon svg{width:18px; height:18px;}
+  .login-logo .lg-word{font-size:19px; font-weight:700; color:var(--db-text); letter-spacing:-0.02em;}
+  .login-card h1{font-size:16.5px; margin:0 0 6px; font-weight:700;}
+  .login-card .sub{font-size:12.5px; color:var(--db-text-sec); margin:0 0 24px;}
+  .login-field{text-align:left; margin-bottom:16px;}
+  .login-field label{display:block; font-size:11px; font-weight:700; color:var(--db-text-sec); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;}
+  .login-field input{width:100%; padding:9px 11px; border:1px solid var(--db-border-strong); border-radius:6px; font-size:13px; color:var(--db-text-mute); background:var(--db-oat-light); font-family:inherit;}
+  .login-divider{display:flex; align-items:center; gap:10px; margin:18px 0; color:var(--db-text-mute); font-size:11px;}
+  .login-divider::before,.login-divider::after{content:""; flex:1; height:1px; background:var(--db-border);}
+  .sso-btn{width:100%; padding:12px; border-radius:7px; background:var(--db-navy); border:none; color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; gap:9px;}
+  .sso-btn:hover{background:var(--db-navy-hov);}
+  .sso-btn .spinner{display:none; border-color:rgba(255,255,255,0.35); border-top-color:#fff;}
+  .sso-btn.loading .spinner{display:inline-block;}
+  .sso-btn.loading .ssolabel{display:none;}
+  .login-foot{margin-top:20px; font-size:11.5px; color:var(--db-text-mute);}
+  .login-foot a{color:var(--db-blue); text-decoration:none;}
+
+  /* ============ HOME SCREEN ============ */
+  .home-content{padding:32px 40px; overflow-y:auto; height:100%;}
+  .home-greet{font-size:22px; font-weight:700; margin-bottom:4px;}
+  .home-date{font-size:12.5px; color:var(--db-text-sec); margin-bottom:26px;}
+  .promo-banner{background:linear-gradient(120deg,#FF3621,#C2540A); border-radius:14px; padding:26px 30px; color:#fff; display:flex; align-items:center; gap:24px; margin-bottom:34px; cursor:pointer; border:none; text-align:left; width:100%;}
+  .promo-banner:hover{filter:brightness(1.04);}
+  .promo-banner .pb-icon{width:48px; height:48px; border-radius:12px; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .promo-banner .pb-icon svg{width:24px; height:24px; color:#fff;}
+  .promo-banner .pb-body{flex:1;}
+  .promo-banner h2{color:#fff; font-size:17px; margin:0 0 5px; font-weight:700;}
+  .promo-banner p{color:rgba(255,255,255,0.9); font-size:12.5px; margin:0; max-width:520px;}
+  .promo-banner .btn-white{background:#fff; color:var(--db-lava); border:none; font-weight:700; padding:10px 18px; border-radius:7px; font-size:13px; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; flex-shrink:0;}
+
+  .home-section-label{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--db-text-sec); margin-bottom:12px;}
+  .recent-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .recent-card{border:1px solid var(--db-border); border-radius:10px; padding:14px; background:#fff;}
+  .recent-card .rc-icon{width:28px; height:28px; border-radius:7px; background:var(--db-oat-med); display:flex; align-items:center; justify-content:center; color:var(--db-text-sec); margin-bottom:10px;}
+  .recent-card .rc-icon svg{width:15px; height:15px;}
+  .recent-card .rc-name{font-size:12.5px; font-weight:650; margin-bottom:3px;}
+  .recent-card .rc-meta{font-size:11px; color:var(--db-text-mute);}
+  @media (max-width:1000px){ .recent-grid{grid-template-columns:repeat(2,1fr);} }
+
+  /* ============ HUB SCREEN ============ */
+  .hub-content{padding:28px 40px 40px; overflow-y:auto; height:100%;}
+  .hub-head h1{font-size:19px; margin:0 0 6px; font-weight:750;}
+  .hub-head p{font-size:12.5px; color:var(--db-text-sec); margin:0; max-width:640px;}
+  .hub-search-row{display:flex; gap:10px; align-items:center; margin:22px 0 16px; flex-wrap:wrap;}
+  .hub-search{flex:1; max-width:480px; min-width:220px; height:38px; border:1px solid var(--db-border-strong); border-radius:8px; background:#fff; display:flex; align-items:center; gap:8px; padding:0 12px;}
+  .hub-search svg{width:15px; height:15px; color:var(--db-text-mute); flex-shrink:0;}
+  .hub-search input{border:none; outline:none; font-size:13px; flex:1; font-family:inherit; color:var(--db-text); background:transparent;}
+  .hub-filters{display:flex; gap:8px;}
+  .hub-filter{font-size:12px; font-weight:600; padding:7px 13px; border-radius:100px; border:1px solid var(--db-border-strong); color:var(--db-text-sec); background:#fff;}
+  .hub-filter.active{background:var(--db-navy); border-color:var(--db-navy); color:#fff;}
+  .hub-count{font-size:11.5px; color:var(--db-text-mute); margin-bottom:14px;}
+
+  .agent-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .agent-card{border:1px solid var(--db-border); border-radius:12px; background:#fff; padding:18px; display:flex; flex-direction:column; gap:12px; transition:box-shadow .15s ease, transform .15s ease;}
+  .agent-card.live:hover{box-shadow:0 8px 24px rgba(27,49,57,0.14); transform:translateY(-2px); cursor:pointer; border-color:var(--db-border-strong);}
+  .agent-card.soon{opacity:0.6;}
+  .ac-top{display:flex; align-items:flex-start; gap:12px;}
+  .ac-icon{width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .ac-icon svg{width:19px; height:19px; color:#fff;}
+  .agent-card.soon .ac-icon{background:var(--db-oat-med) !important;}
+  .agent-card.soon .ac-icon svg{color:var(--db-text-mute);}
+  .ac-name{font-size:14px; font-weight:700; color:var(--db-text); line-height:1.3;}
+  .ac-persona{font-size:11px; color:var(--db-text-mute); margin-top:2px;}
+  .ac-badge{margin-left:auto; font-size:9.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:100px; white-space:nowrap; flex-shrink:0;}
+  .ac-badge.live{background:var(--db-green-bg); color:var(--db-green);}
+  .ac-badge.soon{background:var(--db-oat-med); color:var(--db-text-mute);}
+  .ac-desc{font-size:12.5px; color:var(--db-text-sec); line-height:1.55; margin:0; flex:1;}
+  .ac-foot{display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--db-border); padding-top:12px;}
+  .ac-open{font-size:12.5px; font-weight:700; color:var(--db-lava); display:flex; align-items:center; gap:5px;}
+  .ac-notstarted{font-size:12px; color:var(--db-text-mute);}
+  .agent-card[hidden]{display:none;}
+  @media (max-width:1180px){ .agent-grid{grid-template-columns:repeat(2,1fr);} }
+
+  /* ============ GENIE FLOATING ASSISTANT ============ */
+  .genie-fab{
+    position:fixed; right:26px; bottom:26px; width:52px; height:52px; border-radius:50%;
+    background:linear-gradient(135deg,#FF3621,#C2540A); box-shadow:0 6px 20px rgba(255,54,33,0.35);
+    display:none; align-items:center; justify-content:center; z-index:40; border:none;
+  }
+  .genie-fab.show{display:flex;}
+  .genie-fab svg{width:22px; height:22px; color:#fff;}
+  .genie-panel{
+    position:fixed; right:26px; bottom:90px; width:340px; max-height:460px; background:#fff; border-radius:12px;
+    box-shadow:0 12px 40px rgba(27,49,57,0.25); border:1px solid var(--db-border); z-index:41;
+    display:none; flex-direction:column; overflow:hidden;
+  }
+  .genie-panel.open{display:flex;}
+  .genie-head{display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--db-border);}
+  .genie-head .gi{width:26px; height:26px; border-radius:7px; background:linear-gradient(135deg,#FF3621,#C2540A); display:flex; align-items:center; justify-content:center;}
+  .genie-head .gi svg{width:14px; height:14px; color:#fff;}
+  .genie-head .gt{font-weight:700; font-size:13px;}
+  .genie-head .gs{font-size:10.5px; color:var(--db-text-mute);}
+  .genie-close{margin-left:auto; color:var(--db-text-mute); width:22px; height:22px; display:flex; align-items:center; justify-content:center; border-radius:5px;}
+  .genie-close:hover{background:var(--db-oat-med);}
+  .genie-body{flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:12px; background:var(--db-oat-light);}
+  .gmsg{max-width:88%; font-size:12.5px; line-height:1.5; padding:9px 12px; border-radius:10px;}
+  .gmsg.user{align-self:flex-end; background:var(--db-navy); color:#fff; border-bottom-right-radius:2px;}
+  .gmsg.bot{align-self:flex-start; background:#fff; border:1px solid var(--db-border); border-bottom-left-radius:2px;}
+  .gmsg.bot code{font-family:var(--mono); background:var(--db-oat-med); padding:1px 5px; border-radius:4px; font-size:11.5px;}
+  .genie-input-row{border-top:1px solid var(--db-border); padding:10px 12px; display:flex; gap:8px;}
+  .genie-input{flex:1; border:1px solid var(--db-border-strong); border-radius:20px; padding:8px 14px; font-size:12.5px; font-family:inherit;}
+  .genie-send{width:32px; height:32px; border-radius:50%; background:var(--db-lava); border:none; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .genie-send svg{width:14px; height:14px;}
+
+  /* ============ TOAST ============ */
+  .toast{
+    position:fixed; left:50%; bottom:26px; transform:translate(-50%,16px); background:var(--db-navy-active); color:#fff;
+    font-size:12.5px; font-weight:600; padding:12px 18px; border-radius:9px; box-shadow:0 12px 32px rgba(0,0,0,0.35);
+    opacity:0; pointer-events:none; transition:opacity .22s ease, transform .22s ease; z-index:90; max-width:380px; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translate(-50%,0);}
+
+  /* scrollbars */
+  ::-webkit-scrollbar{width:9px; height:9px;}
+  ::-webkit-scrollbar-thumb{background:#c9cfd1; border-radius:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+</style>
+</head>
+<body>
+
+<!-- ================= DEMO PRESENTER STEPPER ================= -->
+<div class="demo-stepper">
+  <span class="dtag">Demo flow</span>
+  <button class="dstep active" data-goto="login"><span class="n">1</span>Sign In</button>
+  <button class="dstep" data-goto="home"><span class="n">2</span>Workspace Home</button>
+  <button class="dstep" data-goto="hub"><span class="n">3</span>Agent Hub</button>
+  <button class="dstep" data-goto="app"><span class="n">4</span>ADMS Converter Agent</button>
+  <div class="demo-spacer"></div>
+  <button class="demo-reset" id="demoReset">&#8635; Reset Demo</button>
+</div>
+
+<!-- ================= SCREEN 1: LOGIN ================= -->
+<div class="screen active" id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="lg-icon"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2 3 6.5v3L12 14l9-4.5v-3L12 2zm0 8.4L5.3 7 12 3.6 18.7 7 12 10.4zM3 12.5v3L12 20l9-4.5v-3l-9 4.5-9-4.5z"/></svg></div>
+      <div class="lg-word">databricks</div>
+    </div>
+    <h1>Sign in to your workspace</h1>
+    <p class="sub">Exelon's Databricks workspace uses company single sign-on.</p>
+    <div class="login-field">
+      <label>Workspace URL</label>
+      <input value="exelon.cloud.databricks.com" readonly>
+    </div>
+    <button class="sso-btn" id="ssoBtn">
+      <span class="spinner"></span>
+      <span class="ssolabel">Continue with Exelon SSO</span>
+    </button>
+    <div class="login-divider">or</div>
+    <div class="login-field" style="margin-bottom:0;">
+      <label>Email</label>
+      <input value="hailey.tucker@exelon-contractor.com" readonly>
+    </div>
+    <div class="login-foot">Trouble signing in? <a href="#">Contact IT Service Desk</a></div>
+  </div>
+</div>
+
+<!-- ================= SCREEN 2: WORKSPACE HOME ================= -->
+<div class="screen" id="screen-home">
+  <div class="shell">
+    <nav class="rail">
+      <div class="rail-logo"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2 3 6.5v3L12 14l9-4.5v-3L12 2zm0 8.4L5.3 7 12 3.6 18.7 7 12 10.4zM3 12.5v3L12 20l9-4.5v-3l-9 4.5-9-4.5z"/></svg></div>
+      <div class="rail-icon active" title="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg></div>
+      <div class="rail-icon" title="Workspace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></div>
+      <div class="rail-icon" title="Data / Catalog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5V12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V5.5"/><path d="M4 12v6.5c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V12"/></svg></div>
+      <div class="rail-icon" title="Workflows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M8.3 7.5 11 15.5m5-9-2.7 8"/></svg></div>
+      <div class="rail-icon" title="Compute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></div>
+      <div class="rail-icon hint-target" title="Apps" data-goto="hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+      <div class="rail-hint">&#9668; Start here: Agent Hub</div>
+      <div class="rail-icon" title="SQL Editor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></div>
+      <div class="rail-icon" title="Genie Spaces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 4.9L19 9.8l-4.9 1.9L12 17l-2.1-5.3L5 9.8l5.1-1.9L12 3z"/></svg></div>
+      <div class="rail-spacer"></div>
+      <div class="rail-icon" title="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.9.4-1.4 1-1.4 1.9"/><path d="M12 17h.01"/></svg></div>
+      <div class="rail-avatar">HT</div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <div class="ws-switch">Exelon &mdash; Production <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div class="searchbar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          Search data, notebooks, apps&hellip;
+        </div>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-icons">
+          <div class="ticon" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="ticon" title="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.9.4-1.4 1-1.4 1.9M12 17h.01"/></svg></div>
+        </div>
+      </div>
+      <div class="home-content">
+        <div class="home-greet">Good afternoon, Hailey</div>
+        <div class="home-date">Friday, July 17 &middot; Exelon Production workspace</div>
+
+        <button class="promo-banner" id="promoBanner" data-goto="hub">
+          <div class="pb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.2 5.8L20 10l-5.8 2.2L12 18l-2.2-5.8L4 10l5.8-2.2L12 2z"/></svg></div>
+          <div class="pb-body">
+            <h2>Delivery Accelerator agents are live in this workspace</h2>
+            <p>AI agents for migration, reporting, and validation work — embedded right where you already work. Search the Agent Hub and open one in a couple of clicks.</p>
+          </div>
+          <span class="btn-white">Explore Agent Hub &rarr;</span>
+        </button>
+
+        <div class="home-section-label">Recently viewed</div>
+        <div class="recent-grid">
+          <div class="recent-card">
+            <div class="rc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></div>
+            <div class="rc-name">oms_migration_backlog</div>
+            <div class="rc-meta">Notebook &middot; edited 2h ago</div>
+          </div>
+          <div class="recent-card">
+            <div class="rc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M8.3 7.5 11 15.5m5-9-2.7 8"/></svg></div>
+            <div class="rc-name">adms_silver_nightly</div>
+            <div class="rc-meta">Workflow &middot; ran 4h ago</div>
+          </div>
+          <div class="recent-card">
+            <div class="rc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+            <div class="rc-name">ADMS Converter Agent</div>
+            <div class="rc-meta">App &middot; opened yesterday</div>
+          </div>
+          <div class="recent-card">
+            <div class="rc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5V12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V5.5"/><path d="M4 12v6.5c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V12"/></svg></div>
+            <div class="rc-name">adms.silver.outage_event</div>
+            <div class="rc-meta">Table &middot; viewed yesterday</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SCREEN 3: AGENT HUB ================= -->
+<div class="screen" id="screen-hub">
+  <div class="shell">
+    <nav class="rail">
+      <div class="rail-logo"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2 3 6.5v3L12 14l9-4.5v-3L12 2zm0 8.4L5.3 7 12 3.6 18.7 7 12 10.4zM3 12.5v3L12 20l9-4.5v-3l-9 4.5-9-4.5z"/></svg></div>
+      <div class="rail-icon" title="Home" data-goto="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg></div>
+      <div class="rail-icon" title="Workspace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></div>
+      <div class="rail-icon" title="Data / Catalog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5V12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V5.5"/><path d="M4 12v6.5c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V12"/></svg></div>
+      <div class="rail-icon" title="Workflows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M8.3 7.5 11 15.5m5-9-2.7 8"/></svg></div>
+      <div class="rail-icon" title="Compute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></div>
+      <div class="rail-icon active" title="Apps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+      <div class="rail-icon" title="SQL Editor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></div>
+      <div class="rail-icon" title="Genie Spaces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 4.9L19 9.8l-4.9 1.9L12 17l-2.1-5.3L5 9.8l5.1-1.9L12 3z"/></svg></div>
+      <div class="rail-spacer"></div>
+      <div class="rail-icon" title="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.9.4-1.4 1-1.4 1.9"/><path d="M12 17h.01"/></svg></div>
+      <div class="rail-avatar">HT</div>
+    </nav>
+    <div class="main">
+      <div class="topbar">
+        <div class="ws-switch">Exelon &mdash; Production <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div class="searchbar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          Search data, notebooks, apps&hellip;
+        </div>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-icons">
+          <div class="ticon" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="ticon" title="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.9.4-1.4 1-1.4 1.9M12 17h.01"/></svg></div>
+        </div>
+      </div>
+      <div class="appbar">
+        <div class="breadcrumb">Workspace <span class="sep">/</span> Shared <span class="sep cur">/ Apps</span></div>
+      </div>
+      <div class="hub-content">
+        <div class="hub-head">
+          <h1>Agent Hub</h1>
+          <p>Every Delivery Accelerator agent, deployed as a Databricks App. Search by name or task, then open one directly — no separate login, no new tool to learn.</p>
+        </div>
+        <div class="hub-search-row">
+          <div class="hub-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="hubSearch" placeholder="Search agents by name, task, or team&hellip;" autocomplete="off">
+          </div>
+          <div class="hub-filters">
+            <button class="hub-filter active" data-filter="all">All agents</button>
+            <button class="hub-filter" data-filter="live">Live only</button>
+          </div>
+        </div>
+        <div class="hub-count" id="hubCount">10 agents</div>
+
+        <div class="agent-grid" id="agentGrid">
+
+          <div class="agent-card live" data-status="live" data-open="app" data-search="adms converter agent data engineers oms adms migration sql translation">
+            <div class="ac-top">
+              <div class="ac-icon" style="background:linear-gradient(135deg,#FF3621,#C2540A);"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l5 5-9 9-5 1 1-5 8-9z"/><path d="M4 21h16"/></svg></div>
+              <div><div class="ac-name">ADMS Converter Agent</div><div class="ac-persona">Data Engineers &middot; ORA</div></div>
+              <span class="ac-badge live">Live</span>
+            </div>
+            <p class="ac-desc">Migrates legacy OMS SQL into Databricks ADMS end to end — translation, mapping confidence, validation, STTM docs, and PySpark ETL.</p>
+            <div class="ac-foot"><span class="ac-open">Open agent &rarr;</span></div>
+          </div>
+
+          <div class="agent-card live" data-status="live" data-open="toast" data-search="power bi genie data analysts report development dax">
+            <div class="ac-top">
+              <div class="ac-icon" style="background:var(--db-blue);"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M11 20V4M18 20v-7"/></svg></div>
+              <div><div class="ac-name">Power BI Genie</div><div class="ac-persona">Data Analysts &middot; ORA &middot; CCB</div></div>
+              <span class="ac-badge live">Live</span>
+            </div>
+            <p class="ac-desc">Multi-agent Power BI development assistant — report shells, data models, DAX measures, and standards compliance scans.</p>
+            <div class="ac-foot"><span class="ac-open">Open agent &rarr;</span></div>
+          </div>
+
+          <div class="agent-card live" data-status="live" data-open="toast" data-search="dive data ingestion validation engine data engineers validation">
+            <div class="ac-top">
+              <div class="ac-icon" style="background:var(--db-green);"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+              <div><div class="ac-name">DIVE &mdash; Data Ingestion Validation Engine</div><div class="ac-persona">Data Engineers &middot; ORA</div></div>
+              <span class="ac-badge live">Live</span>
+            </div>
+            <p class="ac-desc">Automates post-ingestion validation — record counts, schema comparisons, source-to-target checks, and exception reports.</p>
+            <div class="ac-foot"><span class="ac-open">Open agent &rarr;</span></div>
+          </div>
+
+          <div class="agent-card soon" data-status="soon" data-open="toast" data-search="informatica etl converter agent data engineers ccb mapping xml">
+            <div class="ac-top">
+              <div class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg></div>
+              <div><div class="ac-name">Informatica ETL Converter Agent</div><div class="ac-persona">Data Engineers &middot; CCB</div></div>
+              <span class="ac-badge soon">Coming Soon</span>
+            </div>
+            <p class="ac-desc">Parses Informatica mapping XML into Databricks STTM specs and PySpark transformation notebooks.</p>
+            <div class="ac-foot"><span class="ac-notstarted">Not started</span></div>
+          </div>
+
+          <div class="agent-card soon" data-status="soon" data-open="toast" data-search="informatica workflow converter agent data engineers ccb uc4 orchestration">
+            <div class="ac-top">
+              <div class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M8.3 7.5 11 15.5m5-9-2.7 8"/></svg></div>
+              <div><div class="ac-name">Informatica Workflow Converter Agent</div><div class="ac-persona">Data Engineers &middot; CCB</div></div>
+              <span class="ac-badge soon">Coming Soon</span>
+            </div>
+            <p class="ac-desc">Converts UC4 job orchestration into Databricks Workflow YAML, preserving dependencies and scheduling.</p>
+            <div class="ac-foot"><span class="ac-notstarted">Not started</span></div>
+          </div>
+
+          <div class="agent-card soon" data-status="soon" data-open="toast" data-search="oracle goldengate troubleshooting agent data engineers ora ogg errors">
+            <div class="ac-top">
+              <div class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2-2 2.8-2.8z"/></svg></div>
+              <div><div class="ac-name">Oracle GoldenGate Troubleshooting Agent</div><div class="ac-persona">Data Engineers &middot; ORA</div></div>
+              <span class="ac-badge soon">Coming Soon</span>
+            </div>
+            <p class="ac-desc">Turns cryptic OGG errors into actionable guidance and builds a growing troubleshooting handbook.</p>
+            <div class="ac-foot"><span class="ac-notstarted">Not started</span></div>
+          </div>
+
+          <div class="agent-card soon" data-status="soon" data-open="toast" data-search="data quality agent data engineers ora profiling rules">
+            <div class="ac-top">
+              <div class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg></div>
+              <div><div class="ac-name">Data Quality Agent</div><div class="ac-persona">Data Engineers &middot; ORA</div></div>
+              <span class="ac-badge soon">Coming Soon</span>
+            </div>
+            <p class="ac-desc">Profiles raw datasets, recommends DQ rules, and runs continuous validation inside the pipeline.</p>
+            <div class="ac-foot"><span class="ac-notstarted">Not started</span></div>
+          </div>
+
+          <div class="agent-card soon" data-status="soon" data-open="toast" data-search="azure to databricks ingestion agent data engineers ora adw silver">
+            <div class="ac-top">
+              <div class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 1 1 .7-7.94A5.5 5.5 0 0 1 18 12.5 3.5 3.5 0 0 1 17.5 19H7z"/><path d="M12 11v6M9.5 14.5 12 17l2.5-2.5"/></svg></div>
+              <div><div class="ac-name">Azure to Databricks Ingestion Agent</div><div class="ac-persona">Data Engineers &middot; ORA</div></div>
+              <span class="ac-badge soon">Coming Soon</span>
+            </div>
+            <p class="ac-desc">Generates ingestion artifacts plus unit/integration tests for ADW&rarr;Silver and OMS&rarr;Hyperscale pipelines.</p>
+            <div class="ac-foot"><span class="ac-notstarted">Not started</span></div>
+          </div>
+
+          <div class="agent-card soon" data-status="soon" data-open="toast" data-search="oracle to databricks ingestion agent data engineers ora nextgendap">
+            <div class="ac-top">
+              <div class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="2.6"/><path d="M5 6v6c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V6"/><path d="M12 17v3m0 0 2-2m-2 2-2-2"/></svg></div>
+              <div><div class="ac-name">Oracle to Databricks Ingestion Agent</div><div class="ac-persona">Data Engineers &middot; ORA</div></div>
+              <span class="ac-badge soon">Coming Soon</span>
+            </div>
+            <p class="ac-desc">Automates Oracle source connections, schema mapping, and validation for cloud migration.</p>
+            <div class="ac-foot"><span class="ac-notstarted">Not started</span></div>
+          </div>
+
+          <div class="agent-card soon" data-status="soon" data-open="toast" data-search="databricks notebook generation agent data engineers all projects boilerplate">
+            <div class="ac-top">
+              <div class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l3 3v15H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></div>
+              <div><div class="ac-name">Databricks Notebook Generation Agent</div><div class="ac-persona">Data Engineers &middot; All Projects</div></div>
+              <span class="ac-badge soon">Coming Soon</span>
+            </div>
+            <p class="ac-desc">Generates standardized notebook structure, boilerplate, and reusable components from requirements.</p>
+            <div class="ac-foot"><span class="ac-notstarted">Not started</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SCREEN 4: ADMS CONVERTER AGENT APP ================= -->
+<div class="screen" id="screen-app">
+  <div class="shell">
+    <nav class="rail">
+      <div class="rail-logo"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2 3 6.5v3L12 14l9-4.5v-3L12 2zm0 8.4L5.3 7 12 3.6 18.7 7 12 10.4zM3 12.5v3L12 20l9-4.5v-3l-9 4.5-9-4.5z"/></svg></div>
+      <div class="rail-icon" title="Home" data-goto="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg></div>
+      <div class="rail-icon" title="Workspace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></div>
+      <div class="rail-icon" title="Data / Catalog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="2.8"/><path d="M4 5.5V12c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V5.5"/><path d="M4 12v6.5c0 1.5 3.6 2.8 8 2.8s8-1.3 8-2.8V12"/></svg></div>
+      <div class="rail-icon" title="Workflows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M8.3 7.5 11 15.5m5-9-2.7 8"/></svg></div>
+      <div class="rail-icon" title="Compute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></div>
+      <div class="rail-icon active" title="Apps" data-goto="hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+      <div class="rail-icon" title="SQL Editor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></div>
+      <div class="rail-icon" title="Genie Spaces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 4.9L19 9.8l-4.9 1.9L12 17l-2.1-5.3L5 9.8l5.1-1.9L12 3z"/></svg></div>
+      <div class="rail-spacer"></div>
+      <div class="rail-icon" title="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.9.4-1.4 1-1.4 1.9"/><path d="M12 17h.01"/></svg></div>
+      <div class="rail-avatar">HT</div>
+    </nav>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="ws-switch">Exelon &mdash; Production <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div class="searchbar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          Search data, notebooks, apps&hellip;
+        </div>
+        <div class="topbar-spacer"></div>
+        <div class="topbar-icons">
+          <div class="ticon" title="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+          <div class="ticon" title="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.9.4-1.4 1-1.4 1.9M12 17h.01"/></svg></div>
+        </div>
+      </div>
+
+      <!-- App header bar -->
+      <div class="appbar">
+        <div class="breadcrumb">Workspace <span class="sep">/</span> Shared <span class="sep">/</span> <span class="bclink" data-goto="hub">Apps</span> <span class="sep">/</span> <span class="cur">ADMS Converter Agent</span></div>
+        <div class="app-title-row">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l5 5-9 9-5 1 1-5 8-9z"/><path d="M4 21h16"/></svg>
+          </div>
+          <div>
+            <div class="app-title">ADMS Converter Agent</div>
+            <div class="app-sub"><span class="run-pill">Running</span> &middot; App compute: Small (1 vCPU &middot; 2 GB) &middot; Databricks App</div>
+          </div>
+        </div>
+        <div class="appbar-actions">
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>View source</button>
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M17 11h4M19 9v4"/></svg>Share</button>
+          <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>Open in new tab</button>
+        </div>
+      </div>
+
+      <!-- App canvas: the Databricks App itself -->
+      <div class="app-canvas">
+        <aside class="app-sidebar">
+          <div class="field-group">
+            <label class="field-label">Source SQL</label>
+            <div class="upload-zone" id="uploadZone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg><br>
+              <b>Upload a .sql file</b> or drag and drop
+            </div>
+            <div class="file-chip" id="fileChip" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>
+              <span class="fname">oms_outage_summary.sql</span>
+              <span class="fsize">18.2 KB</span>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">OpCo</label>
+            <select><option>ComEd</option><option>PECO</option><option>BGE</option><option>Pepco</option></select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Consumption Channel</label>
+            <select><option>Electric &mdash; Distribution</option><option>Electric &mdash; Transmission</option><option>Gas</option></select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Target Environment</label>
+            <select><option>DEV &mdash; adms_dev</option><option>SIT &mdash; adms_sit</option><option>PROD &mdash; adms_prod</option></select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Existing STTM (optional)</label>
+            <div class="upload-zone" style="padding:12px 14px;">
+              <b>Attach mapping doc</b> to reuse prior decisions
+            </div>
+          </div>
+
+          <button class="run-btn" id="runBtn">
+            <span class="spinner"></span>
+            <span class="runlabel">&#9654; Run Conversion</span>
+          </button>
+
+          <div class="recent-runs">
+            <label class="field-label">Recent Runs</label>
+            <div class="recent-item"><span class="dot"></span><span class="rname">oms_outage_summary.sql</span><span class="rtime">2m ago</span></div>
+            <div class="recent-item"><span class="dot"></span><span class="rname">oms_meter_read_hist.sql</span><span class="rtime">1h ago</span></div>
+            <div class="recent-item"><span class="dot"></span><span class="rname">oms_crew_dispatch.sql</span><span class="rtime">Yesterday</span></div>
+          </div>
+        </aside>
+
+        <!-- Results -->
+        <section class="results">
+          <div class="tabbar">
+            <div class="tab active" data-tab="translation">SQL Translation</div>
+            <div class="tab" data-tab="confidence">Mapping Confidence <span class="count">4</span></div>
+            <div class="tab" data-tab="validation">Validation</div>
+            <div class="tab" data-tab="sttm">STTM Documentation</div>
+            <div class="tab" data-tab="etl">PySpark ETL</div>
+            <div class="tab" data-tab="trace">Agent Trace <span class="count">5</span></div>
+          </div>
+
+          <!-- EMPTY STATE (shown before first run) -->
+          <div class="tabpanel active" id="emptyPanel">
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l5 5-9 9-5 1 1-5 8-9z"/><path d="M4 21h16"/></svg>
+              <h3>A source file is already staged</h3>
+              <p><code>oms_outage_summary.sql</code> is loaded on the left with OpCo, channel, and target environment pre-filled. Click <b>Run Conversion</b> to see the agent go to work.</p>
+            </div>
+          </div>
+
+          <!-- TRANSLATION -->
+          <div class="tabpanel" data-panel="translation">
+            <div class="panel-head">
+              <h2>Legacy OMS SQL &rarr; ADMS-Compatible SQL</h2>
+              <p>Business logic, joins, and filters preserved. Table and column references remapped against the ADMS target schema.</p>
+            </div>
+            <div class="code-compare">
+              <div class="code-card">
+                <div class="ch">oms_outage_summary.sql (legacy)</div>
+                <pre>SELECT o.<b>OUTAGE_ID</b>, o.<b>DEVICE_ID</b>,
+       o.<b>START_TS</b>, o.<b>REST_TS</b>,
+       c.<b>CUST_CNT</b>
+<span class="kw">FROM</span> <span class="fn">OMS_OWNER.OUTAGE_EVENT</span> o
+<span class="kw">JOIN</span> <span class="fn">OMS_OWNER.OUTAGE_CUST</span> c
+  <span class="kw">ON</span> o.OUTAGE_ID = c.OUTAGE_ID
+<span class="kw">WHERE</span> o.STATUS = <span class="str">'CLOSED'</span></pre>
+              </div>
+              <div class="code-card after">
+                <div class="ch">&#10003; adms_outage_summary.sql (translated)</div>
+                <pre><span class="kw">SELECT</span> o.outage_id, o.device_id,
+       o.start_ts, o.restore_ts <span class="cm">-- REST_TS &rarr; restore_ts</span>,
+       c.customer_count       <span class="cm">-- CUST_CNT &rarr; customer_count</span>
+<span class="kw">FROM</span> <span class="fn">adms.silver.outage_event</span> o
+<span class="kw">JOIN</span> <span class="fn">adms.silver.outage_customer</span> c
+  <span class="kw">ON</span> o.outage_id = c.outage_id
+<span class="kw">WHERE</span> o.status = <span class="str">'CLOSED'</span></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONFIDENCE -->
+          <div class="tabpanel" data-panel="confidence">
+            <div class="panel-head">
+              <h2>Mapping Confidence</h2>
+              <p>Every source &rarr; target mapping is classified with a confidence level and rationale. Anything below "Converted" is flagged for engineer review before promotion.</p>
+            </div>
+            <table class="conf-table">
+              <thead><tr><th>Source</th><th>Target</th><th>Confidence</th><th>Rationale</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><code>OMS_OWNER.OUTAGE_EVENT.REST_TS</code></td>
+                  <td><code>adms.silver.outage_event.restore_ts</code></td>
+                  <td><span class="conf-badge conf-converted">Converted</span></td>
+                  <td class="rationale">Exact 1:1 column match found in prior STTM; naming convention applied automatically.</td>
+                </tr>
+                <tr>
+                  <td><code>OMS_OWNER.OUTAGE_CUST.CUST_CNT</code></td>
+                  <td><code>adms.silver.outage_customer.customer_count</code></td>
+                  <td><span class="conf-badge conf-assumed">Assumed</span></td>
+                  <td class="rationale">No exact match in data dictionary; mapped by semantic similarity to a same-named field used in 3 other converted objects.</td>
+                </tr>
+                <tr>
+                  <td><code>OMS_OWNER.OUTAGE_EVENT.CAUSE_CD</code></td>
+                  <td><code>adms.silver.outage_event.cause_code</code></td>
+                  <td><span class="conf-badge conf-guessed">Guessed</span></td>
+                  <td class="rationale">Target schema has no equivalent field; inferred from column comment text. Needs SME confirmation.</td>
+                </tr>
+                <tr>
+                  <td><code>OMS_OWNER.CREW_XREF.SHFT_FLG</code></td>
+                  <td>&mdash; no target candidate &mdash;</td>
+                  <td><span class="conf-badge conf-unresolved">Unresolved</span></td>
+                  <td class="rationale">No matching table found in ADMS target schema. Flagged for manual mapping.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- VALIDATION -->
+          <div class="tabpanel" data-panel="validation">
+            <div class="panel-head">
+              <h2>Databricks Validation Results</h2>
+              <p>The agent executed the translated SQL against Databricks and iteratively resolved errors before finalizing.</p>
+            </div>
+            <div class="val-grid">
+              <div class="val-stat ok"><div class="vlabel">Execution</div><div class="vval">Passed</div></div>
+              <div class="val-stat ok"><div class="vlabel">Row Match</div><div class="vval">99.8%</div></div>
+              <div class="val-stat warn"><div class="vlabel">Retries</div><div class="vval">1</div></div>
+              <div class="val-stat ok"><div class="vlabel">Schema Diff</div><div class="vval">0 issues</div></div>
+            </div>
+            <div class="val-log">
+              <div class="val-row pass"><svg class="vicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span class="vname">Syntax validation</span><span class="vdetail">0.4s</span></div>
+              <div class="val-row pass"><svg class="vicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span class="vname">Schema resolution against adms.silver</span><span class="vdetail">1.1s</span></div>
+              <div class="val-row pass"><svg class="vicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span class="vname">Dry-run execution</span><span class="vdetail">2.3s</span></div>
+              <div class="val-row pass"><svg class="vicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg><span class="vname">Row-count reconciliation vs. source</span><span class="vdetail">148,204 / 148,491 rows</span></div>
+            </div>
+          </div>
+
+          <!-- STTM -->
+          <div class="tabpanel" data-panel="sttm">
+            <div class="panel-head">
+              <h2>Source-to-Target Mapping Workbook</h2>
+              <p>Auto-generated, version-controlled STTM documentation &mdash; ready to export for change control review.</p>
+            </div>
+            <table class="sttm-table">
+              <thead><tr><th>Source Table</th><th>Source Column</th><th>Target Table</th><th>Target Column</th><th>Transform</th><th>Confidence</th></tr></thead>
+              <tbody>
+                <tr><td>OMS_OWNER.OUTAGE_EVENT</td><td>REST_TS</td><td>adms.silver.outage_event</td><td>restore_ts</td><td>Direct rename</td><td>Converted</td></tr>
+                <tr><td>OMS_OWNER.OUTAGE_CUST</td><td>CUST_CNT</td><td>adms.silver.outage_customer</td><td>customer_count</td><td>Direct rename</td><td>Assumed</td></tr>
+                <tr><td>OMS_OWNER.OUTAGE_EVENT</td><td>CAUSE_CD</td><td>adms.silver.outage_event</td><td>cause_code</td><td>Lookup + rename</td><td>Guessed</td></tr>
+              </tbody>
+            </table>
+            <div class="doc-toolbar">
+              <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Export .xlsx</button>
+              <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M9 8h6"/><path d="M6 3h9l3 3v15H6z"/></svg>Push to Unity Catalog comments</button>
+            </div>
+          </div>
+
+          <!-- ETL -->
+          <div class="tabpanel" data-panel="etl">
+            <div class="panel-head">
+              <h2>Generated PySpark &mdash; Silver Layer</h2>
+              <p>Executable ETL code generated from the approved mappings above, ready to drop into a Databricks Workflow.</p>
+            </div>
+            <div class="etl-block">
+              <div class="etl-head"><span class="fname">adms_outage_summary_silver.py</span><button class="btn">Copy</button></div>
+              <pre><span class="cm"># Auto-generated by ADMS Converter Agent &mdash; review before promoting to prod</span>
+<span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+
+df_event <span class="fn">=</span> spark.read.table(<span class="str">"oms_bronze.outage_event"</span>)
+df_cust  <span class="fn">=</span> spark.read.table(<span class="str">"oms_bronze.outage_cust"</span>)
+
+silver <span class="fn">=</span> (
+    df_event
+    .join(df_cust, <span class="str">"outage_id"</span>, <span class="str">"left"</span>)
+    .select(
+        F.col(<span class="str">"OUTAGE_ID"</span>).alias(<span class="str">"outage_id"</span>),
+        F.col(<span class="str">"DEVICE_ID"</span>).alias(<span class="str">"device_id"</span>),
+        F.col(<span class="str">"REST_TS"</span>).alias(<span class="str">"restore_ts"</span>),
+        F.col(<span class="str">"CUST_CNT"</span>).alias(<span class="str">"customer_count"</span>),  <span class="cm"># confidence: assumed</span>
+    )
+)
+
+silver.write.mode(<span class="str">"merge"</span>).saveAsTable(<span class="str">"adms.silver.outage_event"</span>)</pre>
+            </div>
+          </div>
+
+          <!-- TRACE -->
+          <div class="tabpanel" data-panel="trace">
+            <div class="panel-head">
+              <h2>Agent Trace</h2>
+              <p>Every step the agent took to go from raw SQL to a validated migration artifact &mdash; including where it caught and corrected its own error.</p>
+            </div>
+            <div class="trace-list">
+              <div class="trace-item">
+                <div class="trace-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+                <div class="trace-body">
+                  <div class="trace-title">Parsed source SQL into an AST</div>
+                  <div class="trace-detail">Identified 2 source tables, 1 join, 4 selected columns, 1 filter predicate.</div>
+                  <div class="trace-meta">0.3s</div>
+                </div>
+              </div>
+              <div class="trace-item">
+                <div class="trace-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+                <div class="trace-body">
+                  <div class="trace-title">Resolved tables and columns against the ADMS data dictionary</div>
+                  <div class="trace-detail">3 of 4 columns matched directly; <code>CAUSE_CD</code> required semantic inference from column comments.</div>
+                  <div class="trace-meta">1.8s</div>
+                </div>
+              </div>
+              <div class="trace-item">
+                <div class="trace-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+                <div class="trace-body">
+                  <div class="trace-title">Translated joins, filters, and business logic</div>
+                  <div class="trace-detail">Preserved the <code>STATUS = 'CLOSED'</code> filter and left join semantics exactly.</div>
+                  <div class="trace-meta">0.9s</div>
+                </div>
+              </div>
+              <div class="trace-item">
+                <div class="trace-dot retry"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M4.5 15a8 8 0 0 0 14.6 3M19.5 9A8 8 0 0 0 4.9 6"/></svg></div>
+                <div class="trace-body">
+                  <div class="trace-title">Validated against Databricks &mdash; caught and fixed 1 error</div>
+                  <div class="trace-detail">First pass failed on an ambiguous <code>outage_id</code> reference across the join; agent qualified both references and re-ran successfully.</div>
+                  <div class="trace-meta">2.3s &middot; 1 retry</div>
+                </div>
+              </div>
+              <div class="trace-item">
+                <div class="trace-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+                <div class="trace-body">
+                  <div class="trace-title">Generated STTM documentation and PySpark ETL</div>
+                  <div class="trace-detail">Produced Silver-layer notebook and flagged 1 unresolved mapping for engineer review.</div>
+                  <div class="trace-meta">1.1s</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Genie floating assistant (scoped to the ADMS Converter Agent screen) -->
+<button class="genie-fab" id="genieFab" aria-label="Ask Genie">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 2.2 5.8L20 10l-5.8 2.2L12 18l-2.2-5.8L4 10l5.8-2.2L12 2z"/></svg>
+</button>
+<div class="genie-panel" id="geniePanel">
+  <div class="genie-head">
+    <div class="gi"><svg viewBox="0 0 24 24" fill="#fff"><path d="m12 2 2.2 5.8L20 10l-5.8 2.2L12 18l-2.2-5.8L4 10l5.8-2.2L12 2z"/></svg></div>
+    <div><div class="gt">Ask Genie</div><div class="gs">Grounded in this app's run history</div></div>
+    <div class="genie-close" id="genieClose">&#10005;</div>
+  </div>
+  <div class="genie-body" id="genieBody">
+    <div class="gmsg user">Why was CUST_CNT marked "Assumed" instead of "Converted"?</div>
+    <div class="gmsg bot">No exact match existed in the ADMS data dictionary for <code>CUST_CNT</code>. I matched it by semantic similarity to <code>customer_count</code>, a field used identically in 3 other already-converted objects &mdash; high confidence, but not a documented 1:1 mapping, so it's flagged <code>Assumed</code> rather than <code>Converted</code> until an engineer confirms it.</div>
+  </div>
+  <div class="genie-input-row">
+    <input class="genie-input" placeholder="Ask about this conversion&hellip;">
+    <button class="genie-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 20 18-8L3 4v6l12 2-12 2z"/></svg></button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============ SCREEN NAVIGATION ============
+  var screens = ['login','home','hub','app'];
+  function showScreen(name){
+    if(screens.indexOf(name) === -1) return;
+    screens.forEach(function(s){
+      document.getElementById('screen-'+s).classList.toggle('active', s === name);
+    });
+    document.querySelectorAll('.dstep').forEach(function(d){
+      d.classList.toggle('active', d.dataset.goto === name);
+    });
+    document.getElementById('genieFab').classList.toggle('show', name === 'app');
+    if(name !== 'app'){ document.getElementById('geniePanel').classList.remove('open'); }
+    window.scrollTo(0,0);
+  }
+
+  // stepper buttons (presenter override — always available)
+  document.querySelectorAll('.dstep').forEach(function(btn){
+    btn.addEventListener('click', function(){ showScreen(btn.dataset.goto); });
+  });
+
+  // any element with data-goto navigates (rail icons, promo banner, breadcrumb link)
+  document.querySelectorAll('[data-goto]').forEach(function(el){
+    if(el.classList.contains('dstep')) return; // already wired above
+    el.addEventListener('click', function(){ showScreen(el.dataset.goto); });
+  });
+
+  // reset demo
+  document.getElementById('demoReset').addEventListener('click', function(){ location.reload(); });
+
+  // ============ SCREEN 1: LOGIN ============
+  var ssoBtn = document.getElementById('ssoBtn');
+  ssoBtn.addEventListener('click', function(){
+    if(ssoBtn.classList.contains('loading')) return;
+    ssoBtn.classList.add('loading');
+    setTimeout(function(){
+      ssoBtn.classList.remove('loading');
+      showScreen('home');
+    }, 900);
+  });
+
+  // ============ SCREEN 3: AGENT HUB — search + filter ============
+  var hubSearch = document.getElementById('hubSearch');
+  var hubFilters = document.querySelectorAll('.hub-filter');
+  var hubCards = document.querySelectorAll('.agent-card');
+  var hubCount = document.getElementById('hubCount');
+  var activeFilter = 'all';
+
+  function applyHubFilter(){
+    var q = hubSearch.value.trim().toLowerCase();
+    var visible = 0;
+    hubCards.forEach(function(card){
+      var matchesSearch = !q || card.dataset.search.indexOf(q) !== -1;
+      var matchesFilter = activeFilter === 'all' || card.dataset.status === activeFilter;
+      var show = matchesSearch && matchesFilter;
+      card.hidden = !show;
+      if(show) visible++;
+    });
+    hubCount.textContent = visible + (visible === 1 ? ' agent' : ' agents');
+  }
+  hubSearch.addEventListener('input', applyHubFilter);
+  hubFilters.forEach(function(f){
+    f.addEventListener('click', function(){
+      hubFilters.forEach(function(x){ x.classList.remove('active'); });
+      f.classList.add('active');
+      activeFilter = f.dataset.filter;
+      applyHubFilter();
+    });
+  });
+
+  document.querySelectorAll('.agent-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      var name = card.querySelector('.ac-name').textContent;
+      if(card.dataset.open === 'app'){
+        showScreen('app');
+      } else if(card.classList.contains('soon')){
+        showToast(name + ' is on the roadmap — not started yet.');
+      } else {
+        showToast('Opening ' + name + ' — full interactive walkthrough coming soon in this demo.');
+      }
+    });
+  });
+
+  // ============ TOAST ============
+  var toastEl = document.getElementById('toast');
+  var toastTimer;
+  function showToast(msg){
+    clearTimeout(toastTimer);
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2600);
+  }
+
+  // ============ SCREEN 4: ADMS CONVERTER APP ============
+  // tab switching
+  document.querySelectorAll('.tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+      document.querySelectorAll('.tabpanel').forEach(function(p){p.classList.remove('active');});
+      tab.classList.add('active');
+      document.querySelector('.tabpanel[data-panel="'+tab.dataset.tab+'"]').classList.add('active');
+    });
+  });
+
+  // run button simulated agent execution
+  var runBtn = document.getElementById('runBtn');
+  var emptyPanel = document.getElementById('emptyPanel');
+  runBtn.addEventListener('click', function(){
+    if(runBtn.classList.contains('loading')) return;
+    runBtn.classList.add('loading');
+    document.getElementById('fileChip').style.display = 'flex';
+    setTimeout(function(){
+      runBtn.classList.remove('loading');
+      emptyPanel.classList.remove('active');
+      document.querySelectorAll('.tab')[0].click();
+    }, 1800);
+  });
+
+  // genie panel toggle
+  var fab = document.getElementById('genieFab'), panel = document.getElementById('geniePanel');
+  fab.addEventListener('click', function(){ panel.classList.toggle('open'); });
+  document.getElementById('genieClose').addEventListener('click', function(){ panel.classList.remove('open'); });
+
+  // genie canned send
+  var input = document.querySelector('.genie-input');
+  document.querySelector('.genie-send').addEventListener('click', sendGenie);
+  input.addEventListener('keydown', function(e){ if(e.key==='Enter') sendGenie(); });
+  function sendGenie(){
+    var v = input.value.trim();
+    if(!v) return;
+    var body = document.getElementById('genieBody');
+    var u = document.createElement('div'); u.className='gmsg user'; u.textContent = v;
+    body.appendChild(u);
+    input.value='';
+    body.scrollTop = body.scrollHeight;
+    setTimeout(function(){
+      var b = document.createElement('div'); b.className='gmsg bot';
+      b.innerHTML = 'I can look that up against this run\'s trace and the ADMS data dictionary once connected to a live workspace — in this mockup that lookup is illustrative only.';
+      body.appendChild(b);
+      body.scrollTop = body.scrollHeight;
+    }, 500);
+  }
+</script>
+
+</body>
+</html>
