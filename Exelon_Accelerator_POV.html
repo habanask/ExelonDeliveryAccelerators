@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exelon Delivery Accelerators — Program POV</title>
+<style>
+  :root{
+    --navy-950:#050f1c;
+    --navy-900:#0a1c30;
+    --navy-850:#0f2740;
+    --navy-800:#15324f;
+    --navy-700:#1c3f61;
+    --line:rgba(255,255,255,0.09);
+    --line-strong:rgba(255,255,255,0.16);
+    --blue-500:#1c8fd6;
+    --blue-400:#4facdf;
+    --blue-300:#8ccdf0;
+    --teal-500:#2aa37a;
+    --teal-300:#7fd4b6;
+    --amber-500:#e0a23d;
+    --amber-300:#f0c988;
+    --ink-000:#f7fafc;
+    --ink-100:#dce6ef;
+    --ink-300:#a9bccd;
+    --ink-500:#7891a6;
+    --coral-500:#e2694f;
+    --font-display: -apple-system, "Segoe UI Semibold", "Segoe UI", Roboto, Arial, sans-serif;
+    --font-body: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-mono: ui-monospace, "Cascadia Mono", "Consolas", "SFMono-Regular", Menlo, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
+
+  body{
+    margin:0;
+    background:var(--navy-950);
+    color:var(--ink-100);
+    font-family:var(--font-body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,h4{
+    font-family:var(--font-display);
+    color:var(--ink-000);
+    margin:0;
+    text-wrap:balance;
+    letter-spacing:-0.01em;
+  }
+
+  a{color:inherit;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+
+  /* ---------- top nav ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(5,15,28,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topnav .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
+  .brand{display:flex; align-items:center; gap:14px;}
+  .exelon-mark{display:block; line-height:0;}
+  .deloitte-mark{display:inline-flex; align-items:center; gap:6px; font-family:var(--font-display); font-size:16px; font-weight:650; color:var(--ink-000); letter-spacing:-0.01em;}
+  .deloitte-mark .d-dot{width:7px; height:7px; border-radius:50%; background:#86bc25; display:inline-block;}
+  .brand .x, .foot-brand .x{color:var(--ink-500); font-weight:400; font-size:15px;}
+  .navlinks{display:flex; gap:28px; font-size:13.5px; color:var(--ink-300);}
+  .navlinks a{text-decoration:none; padding:6px 0; border-bottom:2px solid transparent; transition:color .15s, border-color .15s;}
+  .navlinks a:hover{color:var(--ink-000); border-color:var(--blue-400);}
+  .navtag{font-size:11px; letter-spacing:.08em; color:var(--ink-500); text-transform:uppercase; border:1px solid var(--line-strong); padding:4px 10px; border-radius:100px;}
+  @media (max-width:860px){ .navlinks{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; overflow:hidden;
+    padding:96px 0 76px;
+    background:
+      radial-gradient(900px 420px at 82% -10%, rgba(28,143,214,0.28), transparent 60%),
+      radial-gradient(700px 380px at 8% 110%, rgba(42,163,122,0.18), transparent 60%),
+      var(--navy-950);
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--blue-300); font-weight:600; margin-bottom:22px;
+  }
+  .eyebrow::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--blue-400); box-shadow:0 0 0 4px rgba(28,143,214,0.18);}
+  .hero h1{font-size:clamp(34px,4.6vw,58px); font-weight:650; line-height:1.06; max-width:15ch;}
+  .hero .lede{font-size:18px; color:var(--ink-300); max-width:640px; margin-top:22px;}
+  .hero-ctas{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 20px; border-radius:8px; font-size:14px; font-weight:600;
+    text-decoration:none; transition:transform .15s ease, background .15s ease, border-color .15s;
+  }
+  .btn-primary{background:var(--blue-500); color:#fff;}
+  .btn-primary:hover{background:var(--blue-400); transform:translateY(-1px);}
+  .btn-ghost{border:1px solid var(--line-strong); color:var(--ink-100);}
+  .btn-ghost:hover{border-color:var(--blue-400); color:var(--blue-300);}
+
+  .hero-stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    margin-top:64px; background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+  }
+  .hstat{background:var(--navy-900); padding:22px 22px 20px;}
+  .hstat .num{font-family:var(--font-display); font-size:32px; font-weight:650; color:var(--ink-000); font-variant-numeric:tabular-nums;}
+  .hstat .num span{color:var(--teal-300); font-size:20px; margin-left:2px;}
+  .hstat .lbl{font-size:12.5px; color:var(--ink-500); margin-top:6px; max-width:22ch;}
+  @media (max-width:760px){ .hero-stats{grid-template-columns:repeat(2,1fr);} }
+
+  /* ---------- section shell ---------- */
+  section{padding:88px 0;}
+  .section-head{max-width:680px; margin-bottom:48px;}
+  .kicker{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--teal-300); font-weight:700; margin-bottom:14px;}
+  .section-head h2{font-size:clamp(26px,3vw,36px); font-weight:640;}
+  .section-head p{color:var(--ink-300); font-size:15.5px; margin-top:14px;}
+  .divider{height:1px; background:var(--line); border:0; margin:0;}
+
+  /* ---------- vision goals ---------- */
+  .formula-strip{
+    margin-top:40px; border:1px solid var(--line-strong); border-radius:14px; padding:26px 28px;
+    background:linear-gradient(180deg, rgba(28,143,214,0.06), transparent);
+  }
+  .formula-strip .flabel{font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-500); margin-bottom:12px;}
+  .formula{font-family:var(--font-mono); font-size:15px; color:var(--ink-000); overflow-x:auto; white-space:nowrap;}
+  .formula .op{color:var(--ink-500); margin:0 8px;}
+  .formula .plus{color:var(--teal-300);}
+  .formula .minus{color:var(--coral-500);}
+  .steps4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:26px;}
+  .step4{border-left:2px solid var(--line-strong); padding-left:14px;}
+  .step4 .sn{font-family:var(--font-mono); font-size:12px; color:var(--blue-300);}
+  .step4 h4{font-size:14px; font-weight:650; margin:6px 0 6px;}
+  .step4 p{font-size:13px; color:var(--ink-500); margin:0;}
+  @media (max-width:860px){ .steps4{grid-template-columns:1fr 1fr;} }
+  .gate-line{margin-top:22px; font-size:13.5px; color:var(--amber-300); border-top:1px solid var(--line); padding-top:18px;}
+  .gate-line b{color:var(--amber-300);}
+
+  /* ---------- architecture ---------- */
+  .arch-layers{display:flex; flex-direction:column; gap:0;}
+  .arch-row{display:grid; grid-template-columns:190px 1fr; gap:28px; padding:22px 0; border-top:1px solid var(--line);}
+  .arch-row:last-child{border-bottom:1px solid var(--line);}
+  .arch-tag{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-500); padding-top:4px;}
+  .arch-chips{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    display:inline-flex; align-items:center; gap:7px;
+    background:var(--navy-900); border:1px solid var(--line-strong); border-radius:9px;
+    padding:9px 14px; font-size:13.5px; color:var(--ink-100);
+  }
+  .chip b{color:var(--ink-000); font-weight:600;}
+  .chip.core{border-color:rgba(28,143,214,0.5); background:rgba(28,143,214,0.1);}
+  .chip.core b{color:var(--blue-300);}
+  .arch-arrow{display:flex; align-items:center; justify-content:center; color:var(--ink-500); padding:0 4px; flex:0 0 auto;}
+  .arch-arrow svg{width:16px; height:16px;}
+
+  .flow-diagram{display:flex; align-items:stretch; gap:0; margin-top:36px; flex-wrap:wrap;}
+  .flow-node{flex:1; min-width:150px; background:var(--navy-900); border:1px solid var(--line-strong); border-radius:12px; padding:16px 16px 14px;}
+  .flow-node.core{border-color:rgba(28,143,214,0.5); background:rgba(28,143,214,0.08);}
+  .flow-node .fn-n{font-family:var(--font-mono); font-size:11px; color:var(--blue-300);}
+  .flow-node .fn-label{font-size:14px; font-weight:650; color:var(--ink-000); margin:6px 0 5px;}
+  .flow-node .fn-sub{font-size:12px; color:var(--ink-500); margin:0;}
+  @media (max-width:920px){ .flow-diagram{flex-direction:column;} .flow-diagram .arch-arrow{transform:rotate(90deg); padding:4px 0;} .flow-node{width:100%;} }
+
+  .infra-grid{margin-top:36px; display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .infra-card{background:var(--navy-900); border:1px solid var(--line); border-radius:12px; padding:16px 16px 14px;}
+  .infra-card .ihead{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+  .infra-card .iname{font-size:13.5px; font-weight:650; color:var(--ink-000);}
+  .status-pill{font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:100px;}
+  .status-ready{background:rgba(42,163,122,0.16); color:var(--teal-300);}
+  .status-review{background:rgba(224,162,61,0.16); color:var(--amber-300);}
+  .status-planned{background:rgba(120,145,166,0.16); color:var(--ink-300);}
+  .infra-card p{font-size:12.5px; color:var(--ink-500); margin:0;}
+  @media (max-width:920px){ .infra-grid{grid-template-columns:repeat(2,1fr);} .arch-row{grid-template-columns:1fr;} .arch-tag{padding-top:0;} }
+
+  /* ---------- accelerator cards (delivered) ---------- */
+  .accel-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .accel-card{
+    background:var(--navy-900); border:1px solid var(--line); border-radius:16px; padding:26px;
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .accel-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .accel-name{font-size:17px; font-weight:650; color:var(--ink-000); line-height:1.3;}
+  .badge-live{
+    flex-shrink:0; font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--teal-300); background:rgba(42,163,122,0.14); border:1px solid rgba(42,163,122,0.35);
+    padding:4px 9px; border-radius:100px; white-space:nowrap;
+  }
+  .tag-row{display:flex; flex-wrap:wrap; gap:6px;}
+  .tag{font-size:11px; color:var(--ink-500); border:1px solid var(--line-strong); padding:3px 8px; border-radius:6px;}
+  .accel-desc{font-size:13.5px; color:var(--ink-300); margin:0;}
+  .hrs-compare{
+    display:flex; align-items:center; gap:12px; background:var(--navy-850); border-radius:10px; padding:14px 16px;
+  }
+  .hrs-block{flex:1;}
+  .hrs-block .hl{font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-500);}
+  .hrs-block .hv{font-family:var(--font-mono); font-size:16px; color:var(--ink-100); margin-top:3px;}
+  .hrs-arrow{color:var(--teal-300); font-size:16px;}
+  .hrs-block.after .hv{color:var(--teal-300); font-weight:600;}
+  .kpi-list{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:7px;}
+  .kpi-list li{font-size:12.5px; color:var(--ink-300); padding-left:16px; position:relative;}
+  .kpi-list li::before{content:"›"; position:absolute; left:0; color:var(--blue-400); font-weight:700;}
+  .accel-foot{display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--line); padding-top:14px; margin-top:auto;}
+  .devs{font-size:11.5px; color:var(--ink-500);}
+  .roi-chip{
+    font-size:11px; font-family:var(--font-mono); color:var(--amber-300);
+    border:1px dashed rgba(224,162,61,0.5); padding:4px 9px; border-radius:6px; white-space:nowrap;
+  }
+  @media (max-width:980px){ .accel-grid{grid-template-columns:1fr;} }
+
+  /* ---------- roi placeholder note ---------- */
+  .roi-note{
+    margin-top:28px; display:flex; gap:14px; align-items:flex-start;
+    background:rgba(224,162,61,0.06); border:1px solid rgba(224,162,61,0.28); border-radius:12px; padding:16px 18px;
+  }
+  .roi-note svg{flex-shrink:0; width:18px; height:18px; color:var(--amber-300); margin-top:2px;}
+  .roi-note p{font-size:13px; color:var(--ink-300); margin:0;}
+  .roi-note b{color:var(--amber-300);}
+
+  /* ---------- planned use cases table ---------- */
+  .planned-table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  .planned-table thead th{
+    text-align:left; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-500);
+    font-weight:600; padding:0 16px 12px; border-bottom:1px solid var(--line-strong);
+  }
+  .planned-table tbody td{padding:18px 16px; border-bottom:1px solid var(--line); vertical-align:top;}
+  .planned-table tbody tr:last-child td{border-bottom:none;}
+  .pname{font-weight:650; color:var(--ink-000); font-size:14px;}
+  .pmeta{font-size:11.5px; color:var(--ink-500); margin-top:4px;}
+  .pimpact{color:var(--ink-300); max-width:340px;}
+  .status-notstarted{
+    font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-500);
+    border:1px solid var(--line-strong); padding:4px 9px; border-radius:100px; white-space:nowrap; display:inline-block;
+  }
+  .table-scroll{overflow-x:auto; border-radius:14px; border:1px solid var(--line); background:var(--navy-900); padding:8px 8px 4px;}
+  .hrs-inline{font-family:var(--font-mono); font-size:12.5px; color:var(--ink-300); white-space:nowrap;}
+  .hrs-inline .to{color:var(--teal-300);}
+  .pending-txt{font-size:12px; color:var(--ink-500); font-style:italic;}
+  .foundation-note{
+    margin-top:22px; display:flex; gap:14px; align-items:flex-start;
+    background:rgba(28,143,214,0.06); border:1px solid rgba(28,143,214,0.28); border-radius:12px; padding:16px 18px;
+  }
+  .foundation-note svg{flex-shrink:0; width:18px; height:18px; color:var(--blue-300); margin-top:2px;}
+  .foundation-note p{font-size:13px; color:var(--ink-300); margin:0;}
+  .foundation-note b{color:var(--blue-300);}
+
+  /* ---------- footer ---------- */
+  footer{padding:56px 0 60px; border-top:1px solid var(--line);}
+  .foot-row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;}
+  .foot-brand{display:flex; align-items:center; gap:12px;}
+  .foot-meta{font-size:12px; color:var(--ink-500);}
+
+  ::selection{background:rgba(28,143,214,0.35);}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="wrap">
+    <div class="brand">
+      <svg class="exelon-mark" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 92" role="img" aria-label="Exelon">
+        <defs>
+          <linearGradient id="exgrad-nav" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#23d3b6"/>
+            <stop offset="0.45" stop-color="#3a9fe6"/>
+            <stop offset="1" stop-color="#7d34ee"/>
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#exgrad-nav)" stroke-width="1.25">
+          <circle cx="44" cy="30" r="9" opacity="1"/><circle cx="44" cy="30" r="10.6" opacity=".62"/><circle cx="44" cy="30" r="12.2" opacity=".4"/><circle cx="44" cy="30" r="13.8" opacity=".24"/>
+          <circle cx="59.2" cy="41.1" r="9" opacity="1"/><circle cx="59.2" cy="41.1" r="10.6" opacity=".62"/><circle cx="59.2" cy="41.1" r="12.2" opacity=".4"/><circle cx="59.2" cy="41.1" r="13.8" opacity=".24"/>
+          <circle cx="53.4" cy="58.9" r="9" opacity="1"/><circle cx="53.4" cy="58.9" r="10.6" opacity=".62"/><circle cx="53.4" cy="58.9" r="12.2" opacity=".4"/><circle cx="53.4" cy="58.9" r="13.8" opacity=".24"/>
+          <circle cx="34.6" cy="58.9" r="9" opacity="1"/><circle cx="34.6" cy="58.9" r="10.6" opacity=".62"/><circle cx="34.6" cy="58.9" r="12.2" opacity=".4"/><circle cx="34.6" cy="58.9" r="13.8" opacity=".24"/>
+          <circle cx="28.8" cy="41.1" r="9" opacity="1"/><circle cx="28.8" cy="41.1" r="10.6" opacity=".62"/><circle cx="28.8" cy="41.1" r="12.2" opacity=".4"/><circle cx="28.8" cy="41.1" r="13.8" opacity=".24"/>
+        </g>
+        <text x="86" y="63" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="45" font-weight="600" letter-spacing="-1.5" fill="#f7fafc">exelon</text>
+        <text x="232" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f7fafc">SM</text>
+      </svg>
+      <span class="x">×</span>
+      <span class="deloitte-mark"><span class="d-dot"></span>Deloitte.</span>
+    </div>
+    <div class="navlinks">
+      <a href="#vision">Vision</a>
+      <a href="#architecture">How It Works</a>
+      <a href="#delivered">Delivered</a>
+      <a href="#next">What's Next</a>
+    </div>
+    <div class="navtag">Confidential</div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Delivery Accelerator Program</div>
+    <h1>Agents where the work already happens.</h1>
+    <p class="lede">Deloitte is supporting Exelon to embed AI accelerators directly inside Databricks and Power BI — the tools engineers and analysts already open every day — to cut delivery time on migration, reporting, and validation work, and to prove real cost savings, use case by use case.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#delivered">See what's already live →</a>
+      <a class="btn btn-ghost" href="#next">See what's next</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hstat"><div class="num">3<span>of 10</span></div><div class="lbl">Accelerators shipped to v1 and running against live ORA / CCB work</div></div>
+      <div class="hstat"><div class="num">up to 97<span>%</span></div><div class="lbl">Task time removed on the best-performing shipped agent (DIVE)</div></div>
+      <div class="hstat"><div class="num">7</div><div class="lbl">Additional agents scoped and queued on the roadmap</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="vision">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Why This Program Exists</div>
+      <h2>Three bets, one operating discipline.</h2>
+      <p>The program is built to prove itself in dollars, not just demos. Every accelerator is expected to answer the same question before it scales: does it save more than it costs?</p>
+    </div>
+
+    <div class="formula-strip">
+      <div class="flabel">How we calculate net benefit — same formula, every use case</div>
+      <div class="formula">Net Benefit <span class="op">=</span> ( Hours Saved <span class="op">×</span> Users <span class="op">×</span> Labor Rate ) <span class="op minus">−</span> ( Token Cost <span class="op plus">+</span> Build Cost <span class="op plus">+</span> Maintenance Cost )</div>
+      <div class="steps4">
+        <div class="step4"><span class="sn">01</span><h4>Capture Baseline</h4><p>Survey + observe current manual hours per use case, per persona — before any build starts.</p></div>
+        <div class="step4"><span class="sn">02</span><h4>Track Usage</h4><p>Log actual AI-assisted time per task via Jira, Spark logs, and timesheets — before vs. after, side by side.</p></div>
+        <div class="step4"><span class="sn">03</span><h4>Calculate Net ROI</h4><p>Apply the formula above: labor rate × hours saved, minus token, build, and maintenance cost.</p></div>
+        <div class="step4"><span class="sn">04</span><h4>Present Evidence</h4><p>Monthly ROI readout for Deloitte leadership plus an update summary for Exelon stakeholders.</p></div>
+      </div>
+      <div class="gate-line"><b>Success gate:</b> baseline is always captured before a build starts. Without a baseline, ROI can't be proven — which is exactly why the figures below are shown as ranges or placeholders until that data lands.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="architecture">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">How It Works</div>
+      <h2>Databricks is the agentic backbone</h2>
+      <p>No new platform for people to learn. Databricks already hosts the data, the Genie SQL interface, and the Mosaic AI runtime — so it also hosts the orchestration layer. Inside that runtime, Databricks calls out to leading foundation models — Claude among them — to do the reasoning: translating code, drafting documentation, explaining a failed validation. Databricks itself still owns the governance, execution, and lineage; the surface is whatever tool the persona already has open.</p>
+    </div>
+
+    <div class="flow-diagram">
+      <div class="flow-node">
+        <div class="fn-n">01</div>
+        <div class="fn-label">Persona</div>
+        <div class="fn-sub">Engineer or analyst starts in their normal tool</div>
+      </div>
+      <div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="flow-node">
+        <div class="fn-n">02</div>
+        <div class="fn-label">Surface</div>
+        <div class="fn-sub">Databricks notebook, Genie chat, or Power BI report</div>
+      </div>
+      <div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="flow-node core">
+        <div class="fn-n">03</div>
+        <div class="fn-label">Orchestration</div>
+        <div class="fn-sub">Databricks Genie + Mosaic AI route the task, enforce governance</div>
+      </div>
+      <div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="flow-node core">
+        <div class="fn-n">04</div>
+        <div class="fn-label">Reasoning</div>
+        <div class="fn-sub">Claude generates, translates, and explains</div>
+      </div>
+      <div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="flow-node">
+        <div class="fn-n">05</div>
+        <div class="fn-label">Governed Data</div>
+        <div class="fn-sub">Unity Catalog + Delta Lake — every step lineage-tracked</div>
+      </div>
+    </div>
+
+    <div class="arch-layers">
+      <div class="arch-row">
+        <div class="arch-tag">Personas</div>
+        <div class="arch-chips">
+          <span class="chip"><b>Data Engineers</b> — OMS→ADMS migration, ingestion, validation</span>
+          <span class="chip"><b>Data / Functional Analysts</b> — Power BI report development</span>
+          <span class="chip"><b>PMs & Leadership</b> — status, RAID, ROI visibility</span>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-tag">Where they already work</div>
+        <div class="arch-chips">
+          <span class="chip core"><b>Databricks</b> — notebooks, Genie, workflows</span>
+          <span class="chip core"><b>Power BI</b> — reports, datasets, DAX</span>
+          <span class="chip">Microsoft Copilot</span>
+          <span class="chip">Jira · GitHub · SharePoint</span>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-tag">Agent orchestration</div>
+        <div class="arch-chips">
+          <span class="chip core"><b>Databricks Genie + Mosaic AI</b> — task routing, execution, evals</span>
+          <span class="chip core"><b>Claude</b> — code translation, generation, reasoning, explanation</span>
+          <span class="chip">MCP servers — Jira, GitHub, Collibra, Azure</span>
+        </div>
+      </div>
+      <div class="arch-row">
+        <div class="arch-tag">Governed data</div>
+        <div class="arch-chips">
+          <span class="chip">Unity Catalog</span>
+          <span class="chip">Delta Lake (Silver / Gold)</span>
+          <span class="chip">Source systems — Oracle, ADW, Informatica, OMS</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="infra-grid">
+      <div class="infra-card"><div class="ihead"><span class="iname">Databricks (Mosaic, Genie)</span><span class="status-pill status-ready">Ready</span></div><p>Core platform. MCP server available, Genie SQL interface operational.</p></div>
+      <div class="infra-card"><div class="ihead"><span class="iname">Microsoft Copilot</span><span class="status-pill status-ready">Ready</span></div><p>Exelon enterprise license, accessible across business and PM personas.</p></div>
+      <div class="infra-card"><div class="ihead"><span class="iname">Spark Platform</span><span class="status-pill status-review">Review</span></div><p>Exelon-built chatbot — evaluating vs. continued investment as Databricks matures.</p></div>
+      <div class="infra-card"><div class="ihead"><span class="iname">MCP: Jira / GitHub / Collibra</span><span class="status-pill status-planned">Planned</span></div><p>RAID automation, PR integration, and governance catalog access — configured as use cases prioritize.</p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="delivered">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">Delivered &amp; Proven</div>
+      <h2>Three accelerators, shipped to v1, already carrying real work.</h2>
+      <p>Each of these is live against ORA or CCB delivery work today. Hours-saved-per-task is measured directly from developer input; dollar savings follow once labor rate and task-volume baselines are locked per the formula above.</p>
+    </div>
+
+    <div class="accel-grid">
+      <!-- ADMS Converter Agent -->
+      <div class="accel-card">
+        <div class="accel-top">
+          <div class="accel-name">ADMS Converter Agent</div>
+          <span class="badge-live">v1 Completed</span>
+        </div>
+        <div class="tag-row"><span class="tag">Data Engineers</span><span class="tag">ORA</span></div>
+        <p class="accel-desc">Migrates legacy OMS SQL into Databricks ADMS end to end: translates SQL while preserving business logic, classifies mapping confidence, validates the result in Databricks, generates STTM documentation, and produces PySpark ETL for Silver &amp; Gold.</p>
+        <div class="hrs-compare">
+          <div class="hrs-block"><div class="hl">Manual</div><div class="hv">5–7 hrs / task</div></div>
+          <div class="hrs-arrow">→</div>
+          <div class="hrs-block after"><div class="hl">With Agent</div><div class="hv">0.5–1 hr / task</div></div>
+        </div>
+        <ul class="kpi-list">
+          <li>SQL first-pass validation success rate</li>
+          <li>Mapping confidence (% High / Medium / Low)</li>
+          <li>Production defects attributable to migration</li>
+        </ul>
+        <div class="accel-foot">
+          <span class="devs">Built by Sheshan, Sriya</span>
+          <span class="roi-chip">$ savings: pending baseline</span>
+        </div>
+      </div>
+
+      <!-- Power BI Genie -->
+      <div class="accel-card">
+        <div class="accel-top">
+          <div class="accel-name">Power BI Genie</div>
+          <span class="badge-live">v1 Completed</span>
+        </div>
+        <div class="tag-row"><span class="tag">Data Analysts</span><span class="tag">ORA · CCB</span></div>
+        <p class="accel-desc">Multi-agent Power BI development assistant: generates report shells from Functional Design Documents, builds metadata-driven data models, DAX measures, and sample data — then scans reports for standards compliance before developer review.</p>
+        <div class="hrs-compare">
+          <div class="hrs-block"><div class="hl">Manual (shell)</div><div class="hv">8–16 hrs</div></div>
+          <div class="hrs-arrow">→</div>
+          <div class="hrs-block after"><div class="hl">With Agent</div><div class="hv">~1 hr</div></div>
+        </div>
+        <div class="hrs-compare">
+          <div class="hrs-block"><div class="hl">Manual (validation)</div><div class="hv">2–4 weeks</div></div>
+          <div class="hrs-arrow">→</div>
+          <div class="hrs-block after"><div class="hl">With Agent</div><div class="hv">~2 days</div></div>
+        </div>
+        <ul class="kpi-list">
+          <li>Report standard compliance rate</li>
+          <li>Testing &amp; validation effort</li>
+          <li>Production report defects</li>
+        </ul>
+        <div class="accel-foot">
+          <span class="devs">Built by Nomula, Preeti</span>
+          <span class="roi-chip">$ savings: pending baseline</span>
+        </div>
+      </div>
+
+      <!-- DIVE Agent -->
+      <div class="accel-card">
+        <div class="accel-top">
+          <div class="accel-name">DIVE — Data Ingestion Validation Engine</div>
+          <span class="badge-live">v1 Completed</span>
+        </div>
+        <div class="tag-row"><span class="tag">Data Engineers</span><span class="tag">ORA</span></div>
+        <p class="accel-desc">Automates post-ingestion validation: record counts, schema comparisons, and source-to-target mapping checks, executing ~12–15 standardized scenarios and producing exception reports — no manual query writing required.</p>
+        <div class="hrs-compare">
+          <div class="hrs-block"><div class="hl">Manual</div><div class="hv">7–10 hrs / cycle</div></div>
+          <div class="hrs-arrow">→</div>
+          <div class="hrs-block after"><div class="hl">With Agent</div><div class="hv">~0.25 hr</div></div>
+        </div>
+        <ul class="kpi-list">
+          <li>Validation defect detection rate</li>
+          <li>Data quality issues caught before SIT/UAT</li>
+          <li>Agent adoption (% of eligible validations)</li>
+        </ul>
+        <div class="accel-foot">
+          <span class="devs">Delivery team build</span>
+          <span class="roi-chip">$ savings: pending baseline</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="roi-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+      <p><b>Why dollar figures are placeholders, not zeros:</b> the ROI formula needs blended labor rate and tasks-per-project for each accelerator — both are baseline inputs still being collected per the Automation ROI Approach. Hours-saved-per-task above is real, developer-reported data; it converts to a $ figure the moment those two inputs are locked.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="next">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">What's Next</div>
+      <h2>Seven more agents, scoped and sequenced.</h2>
+      <p>Each of these has a defined functionality, input/output contract, and target Databricks App interface — queued behind prioritization scoring on cost savings, reuse, build cost, and dependency risk.</p>
+    </div>
+
+    <div class="table-scroll">
+      <table class="planned-table">
+        <thead>
+          <tr><th>Accelerator</th><th>Expected Impact</th><th>Projected Hours</th><th>ROI</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="pname">Informatica ETL Converter Agent</div><div class="pmeta">Data Engineers · CCB</div></td>
+            <td class="pimpact">Parses Informatica mapping XML into Databricks STTM specs + PySpark transformation notebooks.</td>
+            <td><span class="pending-txt">Sizing pending</span></td>
+            <td><span class="roi-chip">Placeholder</span></td>
+            <td><span class="status-notstarted">Not started</span></td>
+          </tr>
+          <tr>
+            <td><div class="pname">Informatica Workflow Converter Agent</div><div class="pmeta">Data Engineers · CCB</div></td>
+            <td class="pimpact">Converts UC4 job orchestration into Databricks Workflow YAML, preserving dependencies and scheduling logic.</td>
+            <td><span class="pending-txt">Sizing pending</span></td>
+            <td><span class="roi-chip">Placeholder</span></td>
+            <td><span class="status-notstarted">Not started</span></td>
+          </tr>
+          <tr>
+            <td><div class="pname">Oracle GoldenGate Troubleshooting Agent</div><div class="pmeta">Data Engineers · ORA</div></td>
+            <td class="pimpact">Turns cryptic OGG errors into actionable guidance and builds a reusable, ever-growing troubleshooting handbook.</td>
+            <td><span class="pending-txt">Sizing pending</span></td>
+            <td><span class="roi-chip">Placeholder</span></td>
+            <td><span class="status-notstarted">Not started</span></td>
+          </tr>
+          <tr>
+            <td><div class="pname">Data Quality Agent</div><div class="pmeta">Data Engineers · ORA</div></td>
+            <td class="pimpact">Profiles raw datasets, recommends DQ rules (incl. P&amp;U industry-specific), and runs continuous validation inside the pipeline.</td>
+            <td><span class="pending-txt">Sizing pending</span></td>
+            <td><span class="roi-chip">Placeholder</span></td>
+            <td><span class="status-notstarted">Not started</span></td>
+          </tr>
+          <tr>
+            <td><div class="pname">Azure to Databricks Ingestion Agent</div><div class="pmeta">Data Engineers · ORA</div></td>
+            <td class="pimpact">Generates ingestion artifacts plus unit/integration tests for ADW→Silver and OMS→Hyperscale pipelines.</td>
+            <td><span class="hrs-inline">10 hrs <span class="to">→</span> 1 hr</span></td>
+            <td><span class="roi-chip">Placeholder</span></td>
+            <td><span class="status-notstarted">Not started</span></td>
+          </tr>
+          <tr>
+            <td><div class="pname">Oracle to Databricks Ingestion Agent</div><div class="pmeta">Data Engineers · ORA</div></td>
+            <td class="pimpact">Automates Oracle source connections, schema mapping, and validation for NextGenDAP cloud migration.</td>
+            <td><span class="pending-txt">Sizing pending</span></td>
+            <td><span class="roi-chip">Placeholder</span></td>
+            <td><span class="status-notstarted">Not started</span></td>
+          </tr>
+          <tr>
+            <td><div class="pname">Databricks Notebook Generation Agent</div><div class="pmeta">Data Engineers · All Projects</div></td>
+            <td class="pimpact">Generates standardized notebook structure, boilerplate, and reusable components from requirements or metadata.</td>
+            <td><span class="pending-txt">Sizing pending</span></td>
+            <td><span class="roi-chip">Placeholder</span></td>
+            <td><span class="status-notstarted">Not started</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="foundation-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <p><b>A layered architecture is emerging, not seven one-off tools:</b> the Notebook Generation Agent is shaping up as a reusable capability underneath the specialized agents — ADMS Converter and the Informatica Converter both need to produce Databricks notebooks as an output. Specialized agents solve the business problem; the Notebook Generation Agent becomes shared infrastructure they all call.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-brand">
+      <svg class="exelon-mark" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 92" role="img" aria-label="Exelon">
+        <defs>
+          <linearGradient id="exgrad-foot" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#23d3b6"/>
+            <stop offset="0.45" stop-color="#3a9fe6"/>
+            <stop offset="1" stop-color="#7d34ee"/>
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#exgrad-foot)" stroke-width="1.25">
+          <circle cx="44" cy="30" r="9" opacity="1"/><circle cx="44" cy="30" r="10.6" opacity=".62"/><circle cx="44" cy="30" r="12.2" opacity=".4"/><circle cx="44" cy="30" r="13.8" opacity=".24"/>
+          <circle cx="59.2" cy="41.1" r="9" opacity="1"/><circle cx="59.2" cy="41.1" r="10.6" opacity=".62"/><circle cx="59.2" cy="41.1" r="12.2" opacity=".4"/><circle cx="59.2" cy="41.1" r="13.8" opacity=".24"/>
+          <circle cx="53.4" cy="58.9" r="9" opacity="1"/><circle cx="53.4" cy="58.9" r="10.6" opacity=".62"/><circle cx="53.4" cy="58.9" r="12.2" opacity=".4"/><circle cx="53.4" cy="58.9" r="13.8" opacity=".24"/>
+          <circle cx="34.6" cy="58.9" r="9" opacity="1"/><circle cx="34.6" cy="58.9" r="10.6" opacity=".62"/><circle cx="34.6" cy="58.9" r="12.2" opacity=".4"/><circle cx="34.6" cy="58.9" r="13.8" opacity=".24"/>
+          <circle cx="28.8" cy="41.1" r="9" opacity="1"/><circle cx="28.8" cy="41.1" r="10.6" opacity=".62"/><circle cx="28.8" cy="41.1" r="12.2" opacity=".4"/><circle cx="28.8" cy="41.1" r="13.8" opacity=".24"/>
+        </g>
+        <text x="86" y="63" font-family="Segoe UI, Roboto, Arial, sans-serif" font-size="45" font-weight="600" letter-spacing="-1.5" fill="#f7fafc">exelon</text>
+        <text x="232" y="34" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f7fafc">SM</text>
+      </svg>
+      <span class="x">×</span>
+      <span class="deloitte-mark"><span class="d-dot"></span>Deloitte.</span>
+      <span style="color:var(--ink-500); font-size:13px; margin-left:6px;">Delivery Accelerator Program</span>
+    </div>
+    <div class="foot-meta">Source: Accelerator Inventory &amp; Program Charter · Confidential — internal delivery use only</div>
+  </div>
+</footer>
+
+<script>
+  // active nav link highlight on scroll
+  (function(){
+    var sections = ['vision','architecture','delivered','next'].map(function(id){return document.getElementById(id);}).filter(Boolean);
+    var links = Array.prototype.slice.call(document.querySelectorAll('.navlinks a'));
+    if(!('IntersectionObserver' in window) || !sections.length) return;
+    var map = {};
+    links.forEach(function(l){ map[l.getAttribute('href').slice(1)] = l; });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          links.forEach(function(l){ l.style.color=''; l.style.borderColor='transparent'; });
+          var l = map[e.target.id];
+          if(l){ l.style.color = 'var(--ink-000)'; l.style.borderColor = 'var(--blue-400)'; }
+        }
+      });
+    }, {rootMargin:'-45% 0px -50% 0px'});
+    sections.forEach(function(s){ io.observe(s); });
+  })();
+</script>
+
+</body>
+</html>
