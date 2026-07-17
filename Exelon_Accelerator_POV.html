@@ -152,16 +152,15 @@
   .chip b{color:var(--ink-000); font-weight:600;}
   .chip.core{border-color:rgba(28,143,214,0.5); background:rgba(28,143,214,0.1);}
   .chip.core b{color:var(--blue-300);}
-  .arch-arrow{display:flex; align-items:center; justify-content:center; color:var(--ink-500); padding:0 4px; flex:0 0 auto;}
-  .arch-arrow svg{width:16px; height:16px;}
-
-  .flow-diagram{display:flex; align-items:stretch; gap:0; margin-top:36px; flex-wrap:wrap;}
-  .flow-node{flex:1; min-width:150px; background:var(--navy-900); border:1px solid var(--line-strong); border-radius:12px; padding:16px 16px 14px;}
-  .flow-node.core{border-color:rgba(28,143,214,0.5); background:rgba(28,143,214,0.08);}
-  .flow-node .fn-n{font-family:var(--font-mono); font-size:11px; color:var(--blue-300);}
-  .flow-node .fn-label{font-size:14px; font-weight:650; color:var(--ink-000); margin:6px 0 5px;}
-  .flow-node .fn-sub{font-size:12px; color:var(--ink-500); margin:0;}
-  @media (max-width:920px){ .flow-diagram{flex-direction:column;} .flow-diagram .arch-arrow{transform:rotate(90deg); padding:4px 0;} .flow-node{width:100%;} }
+  .journey{position:relative; display:flex; gap:18px; margin-top:40px;}
+  .journey-track{position:absolute; top:22px; left:22px; right:22px; height:2px; background:linear-gradient(90deg,#17d6a0,#3f8fe6,#7a3ce6); opacity:0.55; z-index:0;}
+  .journey-step{position:relative; z-index:1; flex:1; min-width:0;}
+  .j-icon{width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 6px var(--navy-950); margin-bottom:14px;}
+  .j-icon svg{width:20px; height:20px;}
+  .journey-step .j-num{font-family:var(--font-mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-500); margin-bottom:6px;}
+  .journey-step h4{font-size:14.5px; font-weight:650; color:var(--ink-000); margin:0 0 6px;}
+  .journey-step p{font-size:12.5px; color:var(--ink-300); margin:0; line-height:1.55;}
+  @media (max-width:920px){ .journey{flex-direction:column; gap:28px;} .journey-track{display:none;} }
 
   .infra-grid{margin-top:36px; display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
   .infra-card{background:var(--navy-900); border:1px solid var(--line); border-radius:12px; padding:16px 16px 14px;}
@@ -312,7 +311,6 @@
   <div class="wrap">
     <div class="section-head">
       <div class="kicker">Why This Program Exists</div>
-      <h2>Three bets, one operating discipline.</h2>
       <p>The program is built to prove itself in dollars, not just demos. Every accelerator is expected to answer the same question before it scales: does it save more than it costs?</p>
     </div>
 
@@ -340,35 +338,37 @@
       <p>No new platform for people to learn. Databricks already hosts the data, the Genie SQL interface, and the Mosaic AI runtime — so it also hosts the orchestration layer. Inside that runtime, Databricks calls out to leading foundation models — Claude among them — to do the reasoning: translating code, drafting documentation, explaining a failed validation. Databricks itself still owns the governance, execution, and lineage; the surface is whatever tool the persona already has open.</p>
     </div>
 
-    <div class="flow-diagram">
-      <div class="flow-node">
-        <div class="fn-n">01</div>
-        <div class="fn-label">Persona</div>
-        <div class="fn-sub">Engineer or analyst starts in their normal tool</div>
+    <div class="journey">
+      <div class="journey-track"></div>
+      <div class="journey-step">
+        <div class="j-icon" style="background:#17d6a0;"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4.5 3.2-7 7-7s7 2.5 7 7"/></svg></div>
+        <div class="j-num">01 · Persona</div>
+        <h4>Opens their normal tool</h4>
+        <p>Engineer or analyst starts the day in Databricks or Power BI — nothing new to log into.</p>
       </div>
-      <div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-      <div class="flow-node">
-        <div class="fn-n">02</div>
-        <div class="fn-label">Surface</div>
-        <div class="fn-sub">Databricks notebook, Genie chat, or Power BI report</div>
+      <div class="journey-step">
+        <div class="j-icon" style="background:#20b9c2;"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.6"/><path d="M8 20h8M12 16v4"/></svg></div>
+        <div class="j-num">02 · Surface</div>
+        <h4>Asks in plain language</h4>
+        <p>A Databricks notebook, Genie chat, or Power BI report is where the request gets typed.</p>
       </div>
-      <div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-      <div class="flow-node core">
-        <div class="fn-n">03</div>
-        <div class="fn-label">Orchestration</div>
-        <div class="fn-sub">Databricks Genie + Mosaic AI route the task, enforce governance</div>
+      <div class="journey-step">
+        <div class="j-icon" style="background:#3f8fe6;"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.6"/><circle cx="4.5" cy="5.5" r="1.8"/><circle cx="19.5" cy="5.5" r="1.8"/><circle cx="4.5" cy="18.5" r="1.8"/><circle cx="19.5" cy="18.5" r="1.8"/><path d="M9.9 10.1 6 7M14.1 10.1 18 7M9.9 13.9 6 17M14.1 13.9 18 17"/></svg></div>
+        <div class="j-num">03 · Orchestration</div>
+        <h4>Databricks routes the task</h4>
+        <p>Genie + Mosaic AI decide what needs to happen and enforce governance along the way.</p>
       </div>
-      <div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-      <div class="flow-node core">
-        <div class="fn-n">04</div>
-        <div class="fn-label">Reasoning</div>
-        <div class="fn-sub">Claude generates, translates, and explains</div>
+      <div class="journey-step">
+        <div class="j-icon" style="background:#5b6bec;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg></div>
+        <div class="j-num">04 · Reasoning</div>
+        <h4>Claude does the thinking</h4>
+        <p>Code gets translated, docs get drafted, a failed validation gets explained in plain terms.</p>
       </div>
-      <div class="arch-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-      <div class="flow-node">
-        <div class="fn-n">05</div>
-        <div class="fn-label">Governed Data</div>
-        <div class="fn-sub">Unity Catalog + Delta Lake — every step lineage-tracked</div>
+      <div class="journey-step">
+        <div class="j-icon" style="background:#7a3ce6;"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+        <div class="j-num">05 · Governed Data</div>
+        <h4>The result lands, tracked</h4>
+        <p>Unity Catalog and Delta Lake keep every step lineage-tracked and auditable.</p>
       </div>
     </div>
 
