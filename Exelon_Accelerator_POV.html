@@ -152,7 +152,7 @@
   .chip b{color:var(--ink-000); font-weight:600;}
   .chip.core{border-color:rgba(28,143,214,0.5); background:rgba(28,143,214,0.1);}
   .chip.core b{color:var(--blue-300);}
-  .journey{position:relative; display:flex; gap:18px; margin-top:40px;}
+  .journey{position:relative; display:flex; gap:18px; margin:40px 0 64px;}
   .journey-track{position:absolute; top:22px; left:22px; right:22px; height:2px; background:linear-gradient(90deg,#17d6a0,#3f8fe6,#7a3ce6); opacity:0.55; z-index:0;}
   .journey-step{position:relative; z-index:1; flex:1; min-width:0;}
   .j-icon{width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 6px var(--navy-950); margin-bottom:14px;}
@@ -335,7 +335,7 @@
     <div class="section-head">
       <div class="kicker">How It Works</div>
       <h2>Databricks is the agentic backbone</h2>
-      <p>No new platform for people to learn. Databricks already hosts the data, the Genie SQL interface, and the Mosaic AI runtime — so it also hosts the orchestration layer. Inside that runtime, Databricks calls out to leading foundation models — Claude among them — to do the reasoning: translating code, drafting documentation, explaining a failed validation. Databricks itself still owns the governance, execution, and lineage; the surface is whatever tool the persona already has open.</p>
+      <p>No new platform for people to learn. Databricks already hosts the data, the Genie SQL interface, and the Mosaic AI runtime — so it also hosts the orchestration layer. Inside that runtime, Databricks runs an API call to a model of choice — such as Claude — to do the reasoning: translating code, drafting documentation, explaining a failed validation. Databricks itself still owns the governance, execution, and lineage; the surface is whatever tool the persona already has open.</p>
     </div>
 
     <div class="journey">
@@ -361,8 +361,8 @@
       <div class="journey-step">
         <div class="j-icon" style="background:#5b6bec;"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg></div>
         <div class="j-num">04 · Reasoning</div>
-        <h4>Claude does the thinking</h4>
-        <p>Code gets translated, docs get drafted, a failed validation gets explained in plain terms.</p>
+        <h4>Model of choice reasons</h4>
+        <p>Databricks runs an API call to a model of choice — such as Claude — to translate code, draft docs, or explain a failed validation.</p>
       </div>
       <div class="journey-step">
         <div class="j-icon" style="background:#7a3ce6;"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
@@ -394,7 +394,7 @@
         <div class="arch-tag">Agent orchestration</div>
         <div class="arch-chips">
           <span class="chip core"><b>Databricks Genie + Mosaic AI</b> — task routing, execution, evals</span>
-          <span class="chip core"><b>Claude</b> — code translation, generation, reasoning, explanation</span>
+          <span class="chip core"><b>Model of Choice</b> — e.g. Claude — code translation, generation, reasoning, explanation</span>
           <span class="chip">MCP servers — Jira, GitHub, Collibra, Azure</span>
         </div>
       </div>
