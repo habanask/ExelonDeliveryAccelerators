@@ -12,7 +12,7 @@
 
 ## The story you're telling
 
-Most people picture "AI agents" as a chatbot in a corner. This walkthrough shows the opposite: the agent *is* a normal Databricks App, sitting in the same place as every other tool the engineer already uses, opened the same way, with a chat assistant available only if you want to ask it something.
+The agent is a normal Databricks App, sitting in the same place as every other tool the engineer already uses, opened the same way — but once you're inside it, the interaction itself feels exactly like ChatGPT or Claude: a conversation, not a form. You tell it what you need in plain language (or one click on a suggested prompt), and it works, narrates what it's doing, and hands back results in the same thread.
 
 ---
 
@@ -53,20 +53,23 @@ Most people picture "AI agents" as a chatbot in a corner. This walkthrough shows
 
 ## 4. ADMS Converter Agent
 
-This is the main event. The app looks exactly like any other Databricks App: a left-hand input panel and a results area on the right, with a breadcrumb (`Workspace / Shared / Apps / ADMS Converter Agent`) confirming it's just an app like any other. Clicking **Apps** in that breadcrumb jumps straight back to the Hub if you need to.
+This is the main event, and it's the part most worth slowing down for. The app opens as a chat — same layout language as ChatGPT or Claude: a slim conversation-history rail on the left, the message thread in the center, and a message composer at the bottom. A breadcrumb (`Workspace / Shared / Apps / ADMS Converter Agent`) still confirms it's just a normal Databricks App underneath; clicking **Apps** in that breadcrumb jumps straight back to the Hub.
 
-**Say:** *"Everything on the left is exactly what an engineer would fill in for a real migration task."*
+**Say:** *"This isn't a form to fill out — it's a conversation. The agent tells you what it does and what it needs, right up front."*
 
-**Do — walk the sidebar:**
-- **Source SQL:** already has `oms_outage_summary.sql` staged (18.2 KB).
-- **OpCo / Consumption Channel / Target Environment:** pre-filled dropdowns (ComEd, Electric — Distribution, DEV).
-- **Existing STTM (optional):** where a prior mapping doc can be reused instead of starting cold.
+**Do — point out the opening message:** The agent has already introduced itself before you touch anything:
+- What it's built to do (migrate legacy OMS SQL into ADMS-compatible SQL, score mapping confidence, validate, generate STTM docs and PySpark ETL)
+- Exactly what it needs from you: a `.sql` file, the OpCo, the consumption channel, the target environment
+- A one-click **suggested prompt** to try the sample conversion immediately
 
-**Do — run it:** Click **▶ Run Conversion**. There's a ~2 second loading state (standing in for the agent actually parsing, mapping, and validating), then the results populate automatically on the first tab.
+**Do — run it:** Click the suggested prompt chip (*"Convert oms_outage_summary.sql · ComEd · Electric — Distribution · DEV"*). Watch what happens in order:
+1. Your message appears on the right with the file attached, like sending a message in any chat app.
+2. The agent replies **"On it — converting oms_outage_summary.sql:"** and a checklist appears, ticking off each step live (parse → resolve schema → translate → validate → generate docs) — this is the same "agent is working" pattern people already recognize from Claude or ChatGPT tool calls.
+3. A final summary message lands with the key results in plain language, and a **results panel slides open** on the right.
 
-**Say while it's loading:** *"In production this is the agent parsing the SQL, checking every table and column against the ADMS data dictionary, translating the logic, and validating the result against Databricks — all before it ever puts anything in front of an engineer."*
+**Say while it's working:** *"This checklist isn't decoration — each line is a real step: parsing the SQL, checking every column against the ADMS data dictionary, translating the logic, validating against Databricks, generating the docs. Notice step four — it caught and fixed its own error mid-run."*
 
-**Walk the six result tabs, in order:**
+**Do — walk the results panel tabs**, same rich content as before, now living alongside the conversation instead of replacing it:
 
 | Tab | What to point out |
 |---|---|
@@ -77,14 +80,16 @@ This is the main event. The app looks exactly like any other Databricks App: a l
 | **PySpark ETL** | The actual runnable code, ready to drop into a Workflow. |
 | **Agent Trace** | The full step-by-step audit trail, including the one retry — good answer if anyone asks "how do we know it's not just guessing?" |
 
-**Do — show Genie:** Click the floating spark icon (bottom right). A canned Q&A is already there (*"Why was CUST_CNT marked Assumed?"*). Type a new question and hit send to show it responds live — the reply in this mockup is illustrative, but the pattern is real: the assistant is scoped to *this run*, not a generic chatbot.
+**Do — ask a follow-up question, right in the same thread:** Type **"Why was CUST_CNT marked Assumed?"** into the composer and send it. The agent answers in place — no separate chat panel to find, because the whole screen already is the chat. Try a made-up question too, to show it never dead-ends (it gives an honest "I'd need a live workspace connection for that" answer instead of making something up).
 
-**Say to close:** *"Everything you just saw — the login, the search, the click into the app — is exactly how an engineer gets here on their own, no training required."*
+**Say to close:** *"Everything you just saw — the login, the search, one click to run a real conversion, asking a follow-up question — is exactly how an engineer would actually work with this agent day to day. No training, no separate tool."*
 
 ---
 
 ## If something goes off-script
 
 - Click any stage in the top **DEMO FLOW** bar to jump directly there.
-- Click **Reset Demo** to reload from scratch if the run/search state gets into an odd spot.
+- Click **Reset Demo** to reload from scratch if the conversation or search state gets into an odd spot.
 - The Hub's search box and filter chips are fully live — feel free to type something else if a question comes up (e.g., type "validation" to show it matching on task description, not just agent name).
+- If you close the results panel by accident, click **Results panel** in the app's header to bring it back without losing the conversation.
+- The chat history items on the left (`oms_meter_read_hist.sql`, `oms_crew_dispatch.sql`) are for visual context only — clicking them shows a toast rather than switching conversations in this walkthrough.
