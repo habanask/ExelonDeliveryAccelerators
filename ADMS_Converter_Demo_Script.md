@@ -49,6 +49,10 @@ The agent is a normal Databricks App, sitting in the same place as every other t
 
 > Optional: if someone asks about Power BI Genie or DIVE, click their cards — a toast confirms they're live agents too, just not wired into this particular walkthrough.
 
+> **Anticipate this question: "Isn't Genie already a Databricks thing? How is this different?"**
+> Worth having a clean one-liner ready, because "AI agent" is an overloaded term and Genie sits right next to the other cards in this Hub: **Genie answers questions, the other agents do the work.** Genie is Databricks' native conversational analytics feature — you ask it something about data that already exists and it answers or charts it, conversation over. ADMS Converter, DIVE, and the rest are task specialists — you give them an input and they *do* a multi-step job (convert, validate, generate) and hand back an artifact with an audit trail.
+> The limitation to be upfront about if it comes up: today these are genuinely two different underlying systems (Genie Spaces vs. Mosaic AI agents fronted by Databricks Apps), not one merged experience. Databricks does expose an API to call Genie programmatically, so a single unified front door is architecturally possible later — but that routing layer doesn't exist out of the box today, so this Hub keeps them side by side rather than overselling a seamless merge that isn't built yet.
+
 ---
 
 ## 4. ADMS Converter Agent
